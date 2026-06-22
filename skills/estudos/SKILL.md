@@ -66,35 +66,36 @@ Classic interactive flow: choose playlist → choose video → process.
 
 ## Mind Map (Mermaid)
 
+### Context Group 1
 ```mermaid
 flowchart TD
-    subgraph S_G1[Context Group 1]
-        G1
-        G1 --> G1A[Node A]
-        G1 --> G1B[Node B]
-        G1B --> G1C[detail]
-    end
+    G1["Group Title"]
+    G1 --> G1A["Node A"]
+    G1 --> G1B["Node B"]
+    G1B --> G1C["detail"]
+```
 
-    subgraph S_G2[Context Group 2]
-        G2
-        G2 --> G2A[Node A]
-        G2 --> G2B[Node B]
-        G2 --> G2C[Node C]
-    end
+&nbsp;
+
+### Context Group 2
+```mermaid
+flowchart TD
+    G2["Group Title"]
+    G2 --> G2A["Node A"]
+    G2 --> G2B["Node B"]
+    G2 --> G2C["Node C"]
 ```
 ```
 
 **Mermaid treeview rules:**
-- Use a **SINGLE ` ```mermaid ` block** with `subgraph` for each topic group — multiple blocks cause rendering bugs in MarkText and other editors
-- Each `subgraph ID["Group Title"]` creates a visual boundary box around its nodes
-- **Max 7 nodes per subgraph** (hard limit — keeps them readable and prevents layout failures)
-- If a topic has 7+ sub-items, split it into 2+ subgraphs
+- Use **multiple ` ```mermaid ` blocks**, one per topic group, separated by `###` headings
+- Between closing ` ``` ` and the next `###` heading, add `&nbsp;` on its own line — this forces MarkText and other editors to create separate rendering containers instead of merging blocks
+- **Max 7 nodes per diagram** (hard limit — keeps them readable and prevents render failures)
+- If a topic has 7+ sub-items, split into 2+ diagrams
 - First line must be `flowchart TD`
-- **Every node MUST have a UNIQUE ID** — use a 2-char prefix per subgraph (e.g. `PQ`, `HW`, `OL`). Never reuse plain `R`. Avoid `IN` as prefix (reserved keyword in Mermaid 11.x)
-- Root nodes with no label work fine: `PQ` (no brackets, no quotes)
+- **Every node MUST have a UNIQUE ID with a 2-char prefix** per diagram (e.g. `PQ`, `HW`, `OL`). Never reuse plain `R` across diagrams. Avoid `IN` as prefix (reserved in Mermaid 11.x)
+- Each node: `ID["Label"]` (unique ID + quoted label in straight ASCII quotes)
 - Connections: `ID1 --> ID2` for parent-child
-- After all subgraphs, add invisible edges (`~~~`) between root nodes to force vertical stacking: `PQ ~~~ HW`, `HW ~~~ OL`, etc.
-- Labels use square brackets with straight quotes: `ID["Label text"]`
 - See `references/mermaid-treeview-example.md` for a concrete approved example
 
 **Mermaid label rules (critical — failures here cause blank/invisible diagrams):**
@@ -114,12 +115,12 @@ flowchart TD
 
 **Pre-save Mermaid verification checklist** — run this on the generated Mermaid blocks BEFORE saving the file:
 
-1. Scan every label text in all subgraphs
+1. Scan every `["..."]` label in all mermaid code blocks
 2. Check for: `?` `!` `<` `>` `$` `/` `~` `,` `:` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
-4. Confirm every subgraph has ≤7 nodes (hard limit)
-5. Confirm ALL node IDs are unique across the entire diagram — use a 2-char prefix per subgraph
-6. Confirm invisible edges (~~~) between subgraph roots are present to force vertical stacking
+4. Confirm every diagram has ≤7 nodes (hard limit)
+5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram
+6. Confirm `&nbsp;` separator is present between closing ` ``` ` and next `###` heading
 7. If any violation found, FIX IT in the content before writing the file
 
 3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
