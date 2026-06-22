@@ -92,7 +92,7 @@ flowchart TD
 - **Max 7 nodes per diagram** (hard limit — keeps them readable and prevents render failures)
 - If a topic has 7+ sub-items, split it into 2+ diagrams
 - First line must be `flowchart TD`
-- **Every diagram must use UNIQUE node IDs** — use a 2-character prefix per diagram (e.g. `PQ`, `HW`, `OL`) for all nodes including the root. Never reuse `R` across diagrams. Some renderers merge consecutive blocks into one canvas; duplicate IDs cause overlapping.
+- **Every diagram must use UNIQUE node IDs** — use a 2-character prefix per diagram (e.g. `PQ`, `HW`, `OL`) for all nodes including the root. Never reuse `R` across diagrams. Avoid `IN` as a prefix (reserved keyword in Mermaid 11.x). Some renderers merge consecutive blocks into one canvas; duplicate IDs cause overlapping.
 - Each node: `ID["Label"]` (unique ID + quoted label)
 - Connections: `ID1 --> ID2` for parent-child
 - Use `### Subheading` before each diagram as its title
@@ -104,7 +104,7 @@ flowchart TD
 - **NO special quotes** — use straight `"` (ASCII 34), not curly/typographic quotes
 - **Keep labels short** — ideally under 25 characters, hard max 40
 - **Avoid emoji in labels** ✅❌ may not render in Mermaid — describe status with text (e.g. "- APROVADO" or "- FALHOU")
-- **NO question marks (?), exclamation marks (!), angle brackets (< >), dollar signs ($), forward slashes (/), or tildes (~)** in labels — these break Mermaid parsers
+- **NO question marks (?), exclamation marks (!), angle brackets (< >), dollar signs ($), forward slashes (/), tildes (~), commas (,), or colons (:)** in labels — these break Mermaid 11.x parsers
 - **NO `+` or `-` at the very start of a label** — Mermaid may interpret them as operators
 - **NO parentheses `(` `)`** in labels — can be confused with Mermaid syntax
 - Good: `R["O problema: ficou bom nao e avaliacao"]`
@@ -117,7 +117,7 @@ flowchart TD
 **Pre-save Mermaid verification checklist** — run this on the generated Mermaid blocks BEFORE saving the file:
 
 1. Scan every `["..."]` label in all mermaid code blocks
-2. Check for: `?` `!` `<` `>` `$` `/` `~` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
+2. Check for: `?` `!` `<` `>` `$` `/` `~` `,` `:` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
 4. Confirm every diagram has ≤7 nodes (hard limit)
 5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram, never reuse plain `R`
