@@ -116,9 +116,9 @@ flowchart TD
 After saving the mind map and updating `.processed`:
 
 1. `cd ~/git/skills`
-2. Load `caveman-commit` skill and use it to generate the commit message
-3. Run `git add -A && git commit -m "<caveman-commit message>"`
-4. Run `git push`
+2. Load `caveman-commit` skill — it outputs a commit message as a code block (subject ≤50 chars, body only if needed)
+3. Use that message: `git add -A && git commit -m "<the caveman-commit message>"`
+4. `git push`
 5. Confirm: "✅ Changes committed and pushed to git/skills repo."
 
 ### Step 5 — Clear context and continue
@@ -268,5 +268,5 @@ Two different MCP servers provide transcript access. If one fails, try the other
 - Videos without transcripts: notify and offer another choice (Modes 1 and 2) or report as not possible (Mode 3)
 - **Mode 2**: be flexible in topic matching — expand to synonyms and common variations (both English and Portuguese)
 - **Mode 3**: skip all playlist interaction entirely
-- **Always**: one video per session, end by asking user to `/reset` after each processing
+- **Always**: one video per session, end by asking user to `/new` after each processing
 - **Trigger matching**: accept English (`update studies`), Portuguese (`atualizar estudos`), and Hermes-prefix (`/estudos`) trigger phrases for all modes
