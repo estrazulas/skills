@@ -103,18 +103,20 @@ flowchart TD
 - **NO special quotes** — use straight `"` (ASCII 34), not curly/typographic quotes
 - **Keep labels short** — ideally under 25 characters, hard max 40
 - **Avoid emoji in labels** ✅❌ may not render in Mermaid — describe status with text (e.g. "- APROVADO" or "- FALHOU")
-- **NO question marks (?), exclamation marks (!), angle brackets (< >), or dollar signs ($)** in labels — these break Mermaid parsers
+- **NO question marks (?), exclamation marks (!), angle brackets (< >), dollar signs ($), forward slashes (/), or tildes (~)** in labels — these break Mermaid parsers
 - **NO `+` or `-` at the very start of a label** — Mermaid may interpret them as operators
 - **NO parentheses `(` `)`** in labels — can be confused with Mermaid syntax
 - Good: `R["O problema: ficou bom nao e avaliacao"]`
 - Bad: `R["O problema: 'Ficou bom' não é avaliação?!!!!"]` — has curly quotes, accent, special chars
 - Bad: `R["Resposta: <45 tok/s>"]` — angle brackets break rendering
 - Bad: `R["+B = +inteligencia"]` — plus at start is risky
+- Bad: `R["78 tok/s - Rapido"]` — forward slash breaks rendering
+- Bad: `R["Custo ~16k USD"]` — tilde breaks rendering
 
 **Pre-save Mermaid verification checklist** — run this on the generated Mermaid blocks BEFORE saving the file:
 
 1. Scan every `["..."]` label in all mermaid code blocks
-2. Check for: `?` `!` `<` `>` `$` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
+2. Check for: `?` `!` `<` `>` `$` `/` `~` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
 4. Confirm every diagram has ≤7 nodes (hard limit)
 5. Confirm there's a blank line between adjacent ` ```mermaid ` blocks
