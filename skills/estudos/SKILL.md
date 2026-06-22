@@ -42,7 +42,9 @@ Classic interactive flow: choose playlist → choose video → process.
 
 1. Get the transcript — follow the **[Transcript Retrieval Fallback Strategy](#transcript-retrieval---fallback-strategy)** below
    - If there is **NO transcript** after trying both tools: say "⏭️ no transcript: <title>" and go back to step 2
-2. Using the transcript, generate a mind map. The output must include BOTH a markdown mind map AND multiple small Mermaid treeview diagrams:
+2. **Confirmation** — show the video title and duration, then ask: **"Process this video? (y/n)"**
+   - Wait for the user to respond. If "n" or "no", go back to step 2
+3. Using the transcript, generate a mind map. The output must include BOTH a markdown mind map AND multiple small Mermaid treeview diagrams:
 
 ```markdown
 # <Video Title>
@@ -123,9 +125,9 @@ flowchart TD
 6. Confirm `&nbsp;` separator is present between closing ` ``` ` and next `###` heading
 7. If any violation found, FIX IT in the content before writing the file
 
-3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
-4. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
-5. Confirm: "✅ <title> processed and saved!"
+4. Save as `~/Desktop/conteudoestudos/<video-title>.md`
+5. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
+6. Confirm: "✅ <title> processed and saved!"
 
 ### Step 4 — Commit changes to skills repo
 
