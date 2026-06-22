@@ -92,6 +92,7 @@ flowchart TD
 - **Max 7 nodes per diagram** (hard limit — keeps them readable and prevents render failures)
 - If a topic has 7+ sub-items, split it into 2+ diagrams
 - First line must be `flowchart TD`
+- **Every diagram must use UNIQUE node IDs** — use a 2-character prefix per diagram (e.g. `PQ`, `HW`, `OL`) for all nodes including the root. Never reuse `R` across diagrams. Some renderers merge consecutive blocks into one canvas; duplicate IDs cause overlapping.
 - Each node: `ID["Label"]` (unique ID + quoted label)
 - Connections: `ID1 --> ID2` for parent-child
 - Use `### Subheading` before each diagram as its title
@@ -119,8 +120,10 @@ flowchart TD
 2. Check for: `?` `!` `<` `>` `$` `/` `~` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
 4. Confirm every diagram has ≤7 nodes (hard limit)
-5. Confirm there are **2 blank lines** between each closing ` ``` ` and the next `###` heading — single blank lines let some renderers merge diagrams
-6. If any violation found, FIX IT in the content before writing the file
+5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram, never reuse plain `R`
+6. Confirm there are **2 blank lines** between each closing ` ``` ` and the next `###` heading
+6. Run `python3 ~/.hermes/skills/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports before saving
+7. If any violation found, FIX IT in the content before writing the file
 
 3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
 4. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
