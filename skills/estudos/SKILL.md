@@ -95,7 +95,7 @@ flowchart TD
 - Each node: `ID["Label"]` (unique ID + quoted label)
 - Connections: `ID1 --> ID2` for parent-child
 - Use `### Subheading` before each diagram as its title
-- Leave a blank line between each mermaid code block so the renderer doesn't merge them
+- Leave **2 blank lines** between the closing ` ``` ` of one mermaid block and the next `### Heading` — single blank lines let some renderers merge diagrams
 - See `references/mermaid-treeview-example.md` for a concrete approved example
 
 **Mermaid label rules (critical — failures here cause blank/invisible diagrams):**
@@ -119,7 +119,7 @@ flowchart TD
 2. Check for: `?` `!` `<` `>` `$` `/` `~` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
 4. Confirm every diagram has ≤7 nodes (hard limit)
-5. Confirm there's a blank line between adjacent ` ```mermaid ` blocks
+5. Confirm there are **2 blank lines** between each closing ` ``` ` and the next `###` heading — single blank lines let some renderers merge diagrams
 6. If any violation found, FIX IT in the content before writing the file
 
 3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
