@@ -66,37 +66,34 @@ Classic interactive flow: choose playlist → choose video → process.
 
 ## Mind Map (Mermaid)
 
-### <Context Group 1>
 ```mermaid
 flowchart TD
-    R["<Group Title>"]
-    R --> N1["Node 1"]
-    N1 --> D1["detail"]
-    R --> N2["Node 2"]
-    N2 --> D2["detail"]
-```
+    subgraph S_G1[Context Group 1]
+        G1
+        G1 --> G1A[Node A]
+        G1 --> G1B[Node B]
+        G1B --> G1C[detail]
+    end
 
-### <Context Group 2>
-```mermaid
-flowchart TD
-    R["<Group Title>"]
-    R --> N1["Node 1"]
-    R --> N2["Node 2"]
-    R --> N3["Node 3"]
+    subgraph S_G2[Context Group 2]
+        G2
+        G2 --> G2A[Node A]
+        G2 --> G2B[Node B]
+        G2 --> G2C[Node C]
+    end
 ```
 ```
 
 **Mermaid treeview rules:**
-- BREAK into **multiple small diagrams** (4-7 nodes each) grouped by context/theme — never one giant diagram
-- Each group is a logical cluster of related topics
-- **Max 7 nodes per diagram** (hard limit — keeps them readable and prevents render failures)
-- If a topic has 7+ sub-items, split it into 2+ diagrams
+- Use a **SINGLE ` ```mermaid ` block** with `subgraph` for each topic group — multiple blocks cause rendering bugs in MarkText and other editors
+- Each `subgraph ID["Group Title"]` creates a visual boundary box around its nodes
+- **Max 7 nodes per subgraph** (hard limit — keeps them readable and prevents layout failures)
+- If a topic has 7+ sub-items, split it into 2+ subgraphs
 - First line must be `flowchart TD`
-- **Every diagram must use UNIQUE node IDs** — use a 2-character prefix per diagram (e.g. `PQ`, `HW`, `OL`) for all nodes including the root. Never reuse `R` across diagrams. Avoid `IN` as a prefix (reserved keyword in Mermaid 11.x). Some renderers merge consecutive blocks into one canvas; duplicate IDs cause overlapping.
-- Each node: `ID["Label"]` (unique ID + quoted label)
+- **Every node MUST have a UNIQUE ID** — use a 2-char prefix per subgraph (e.g. `PQ`, `HW`, `OL`). Never reuse plain `R`. Avoid `IN` as prefix (reserved keyword in Mermaid 11.x)
+- Root nodes with no label work fine: `PQ` (no brackets, no quotes)
 - Connections: `ID1 --> ID2` for parent-child
-- Use `### Subheading` before each diagram as its title
-- Leave **2 blank lines** between the closing ` ``` ` of one mermaid block and the next `### Heading` — single blank lines let some renderers merge diagrams
+- Labels use square brackets with straight quotes: `ID["Label text"]`
 - See `references/mermaid-treeview-example.md` for a concrete approved example
 
 **Mermaid label rules (critical — failures here cause blank/invisible diagrams):**
@@ -116,13 +113,12 @@ flowchart TD
 
 **Pre-save Mermaid verification checklist** — run this on the generated Mermaid blocks BEFORE saving the file:
 
-1. Scan every `["..."]` label in all mermaid code blocks
+1. Scan every label text in all subgraphs
 2. Check for: `?` `!` `<` `>` `$` `/` `~` `,` `:` `(` `)` `á` `é` `í` `ó` `ú` `ã` `ç` in labels — if found, rewrite without them
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
-4. Confirm every diagram has ≤7 nodes (hard limit)
-5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram, never reuse plain `R`
-6. Confirm there are **2 blank lines** between each closing ` ``` ` and the next `###` heading
-6. Run `python3 ~/.hermes/skills/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports before saving
+4. Confirm every subgraph has ≤7 nodes (hard limit)
+5. Confirm ALL node IDs are unique across the entire diagram — use a 2-char prefix per subgraph
+6. Confirm the output is a single ` ```mermaid ` block (no multiple blocks)
 7. If any violation found, FIX IT in the content before writing the file
 
 3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
