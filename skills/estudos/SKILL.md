@@ -93,6 +93,7 @@ flowchart TD
 - **Every node MUST have a UNIQUE ID** — use a 2-char prefix per subgraph (e.g. `PQ`, `HW`, `OL`). Never reuse plain `R`. Avoid `IN` as prefix (reserved keyword in Mermaid 11.x)
 - Root nodes with no label work fine: `PQ` (no brackets, no quotes)
 - Connections: `ID1 --> ID2` for parent-child
+- After all subgraphs, add invisible edges (`~~~`) between root nodes to force vertical stacking: `PQ ~~~ HW`, `HW ~~~ OL`, etc.
 - Labels use square brackets with straight quotes: `ID["Label text"]`
 - See `references/mermaid-treeview-example.md` for a concrete approved example
 
@@ -118,7 +119,7 @@ flowchart TD
 3. Check labels starting with `+` or `-` — rephrase to avoid leading operators
 4. Confirm every subgraph has ≤7 nodes (hard limit)
 5. Confirm ALL node IDs are unique across the entire diagram — use a 2-char prefix per subgraph
-6. Confirm the output is a single ` ```mermaid ` block (no multiple blocks)
+6. Confirm invisible edges (~~~) between subgraph roots are present to force vertical stacking
 7. If any violation found, FIX IT in the content before writing the file
 
 3. Save as `~/Desktop/conteudoestudos/<video-title>.md`
