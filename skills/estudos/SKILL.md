@@ -44,7 +44,7 @@ Classic interactive flow: choose playlist → choose video → process.
    - If there is **NO transcript** after trying both tools: say "⏭️ no transcript: <title>" and go back to step 2
 2. **Confirmation** — show the video title and duration, then ask: **"Process this video? (y/n)"**
    - Wait for the user to respond. If "n" or "no", go back to step 2
-3. Using the transcript, generate a mind map. The output must include BOTH a markdown mind map AND multiple small Mermaid treeview diagrams:
+3. Using the transcript, generate the mind map content (BOTH markdown mind map AND multiple small Mermaid treeview diagrams). Keep it in memory — do NOT save to disk yet. The output must include:
 
 ```markdown
 # <Video Title>
@@ -123,21 +123,32 @@ flowchart TD
 4. Confirm every diagram has ≤7 nodes (hard limit)
 5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram
 6. Confirm `&nbsp;` separator is present between closing ` ``` ` and next `###` heading
-7. If any violation found, FIX IT in the content before writing the file
+7. Run `python3 ~/.hermes/skills/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports
+8. If any violation found, FIX IT in the content before writing the file
 
-4. Save as `~/Desktop/conteudoestudos/<video-title>.md`
-5. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
-6. Confirm: "✅ <title> processed and saved!"
+4. **Show and confirm before saving** — present the full mind map content to the user and explain what will happen:
+   > \"Here's the generated mind map for **<title>** — shall I save it to `~/Desktop/conteudoestudos/<video-title>.md` and mark it as processed?\"
 
-### Step 4 — Commit changes to skills repo
+5. Wait for the user's response. If they say "n" or "no", ask what to change — do NOT save anything yet.
+   - If they approve (\"y\", \"yes\", \"sim\", \"ok\"): save the file as `~/Desktop/conteudoestudos/<video-title>.md`
 
-After saving the mind map and updating `.processed`:
+6. Save as `~/Desktop/conteudoestudos/<video-title>.md`
+7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
+8. Confirm: "✅ <title> processed and saved!"
 
-1. `cd ~/git/skills`
-2. Load `caveman-commit` skill — it outputs a commit message as a code block (subject ≤50 chars, body only if needed)
-3. Use that message: `git add -A && git commit -m "<the caveman-commit message>"`
-4. `git push`
-5. Confirm: "✅ Changes committed and pushed to git/skills repo."
+### Step 4 — Commit changes to skills repo (with confirmation)
+
+1. **Explain and confirm before committing** — tell the user what files were changed:
+   > "New file: `~/Desktop/conteudoestudos/<video-title>.md`"
+   > "Updated: `~/Desktop/conteudoestudos/.processed` (+video_id `<id>`)"
+   > "Shall I commit and push these changes to `~/git/skills/`?"
+2. Wait for the user's response. If they say "n" or "no", skip the commit entirely.
+   - If they approve ("y", "yes", "sim", "ok"): proceed with commit
+3. `cd ~/git/skills`
+4. Load `caveman-commit` skill — it outputs a commit message as a code block (subject ≤50 chars, body only if needed)
+5. Use that message: `git add -A && git commit -m "<the caveman-commit message>"`
+6. `git push`
+7. Confirm: "✅ Changes committed and pushed to git/skills repo."
 
 ### Step 5 — Clear context and continue
 
@@ -210,11 +221,21 @@ If unable to extract the `video_id`, respond:
 1. Get video metadata with `mcp__youtube-management__youtube_get_video` for the title (use `video_id` parameter)
 2. Get the transcript — follow the **[Transcript Retrieval Fallback Strategy](#transcript-retrieval---fallback-strategy)** below
    - If there is **NO transcript** after trying both tools: say `⏭️ no transcript for video <video_id>. Cannot process this one.`
-3. Generate the mind map using the same format as Mode 1
-4. Save as `~/Desktop/conteudoestudos/<video-title>.md`
-5. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
-6. Confirm: "✅ `<title>` processed from direct link and saved!"
-7. End with the context cleanup message:
+3. Generate the mind map content using the same format as Mode 1. Keep it in memory — do NOT save to disk yet.
+4. **Show and confirm before saving** — present the full mind map content:
+   > "Here's the generated mind map for **<title>** — shall I save it to `~/Desktop/conteudoestudos/<video-title>.md` and mark it as processed?"
+5. Wait for the user's response. If they say "n" or "no", ask what to change — do NOT save anything yet.
+   - If they approve ("y", "yes", "sim", "ok"): save the file and proceed
+6. Save as `~/Desktop/conteudoestudos/<video-title>.md`
+7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
+8. Confirm: "✅ `<title>` processed from direct link and saved!"
+9. **Explain and confirm before committing** — tell the user what files were changed:
+   > "New file: `~/Desktop/conteudoestudos/<video-title>.md`"
+   > "Updated: `~/Desktop/conteudoestudos/.processed` (+video_id `<id>`)"
+   > "Shall I commit and push to `~/git/skills/`?"
+10. Wait for the user's response. If "n" or "no", skip commit entirely.
+    - If approved: `cd ~/git/skills`, load caveman-commit, `git add -A && git commit -m "..."`, `git push`
+11. End with the context cleanup message:
 
 > ✅ `<title>` saved to `~/Desktop/conteudoestudos/`
 > 🧹 **Type `/new` to clear context**, then send `update studies` again to process the next one.
