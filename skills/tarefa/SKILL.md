@@ -60,14 +60,22 @@ Criado em: <data atual>
 
 Quando o usuário diz que uma tarefa foi feita:
 
-1. Listar os arquivos `.md` da pasta de tarefas (excluindo o `done/`) pra mostrar quais existem
-2. Se o usuário já especificou qual tarefa, identificar o arquivo correspondente
-3. Criar o diretório `done/` dentro da pasta de tarefas se não existir
-4. Adicionar no final do arquivo: `Concluída em: <data de hoje>`
-5. Mover o arquivo de `<diretorio>/arquivo.md` para `<diretorio>/done/arquivo.md`
-6. Confirmar: "✅ Tarefa arquivada: `<diretorio>/done/arquivo.md`"
+1. Listar os arquivos `.md` da pasta de tarefas (excluindo o `done/`)
+2. Se o usuário especificou um nome, fazer **busca por similaridade** — procurar todos os `.md` cujo nome contenha qualquer parte do termo que o usuário disse
+3. **Se a busca retornar mais de 1 arquivo, SEMPRE perguntar qual.** É erro grave arquivar sem confirmar quando há ambiguidade. Exemplo:
 
-Se não souber qual arquivo o usuário quer arquivar, listar e perguntar:
+> "Achei 2 tarefas com 'graphify'. Qual você quer arquivar?"
+> 1. estudo-graphify-claude-code.md
+> 2. fork-graphify-proxy-apikey.md
+
+4. Se retornar exatamente 1, pode arquivar direto
+5. Se retornar 0, avisar que não encontrou e listar todas as disponíveis
+6. Criar o diretório `done/` dentro da pasta de tarefas se não existir
+7. Adicionar no final do arquivo: `Concluída em: <data de hoje>`
+8. Mover o arquivo de `<diretorio>/arquivo.md` para `<diretorio>/done/arquivo.md`
+9. Confirmar: "✅ Tarefa arquivada: `<diretorio>/done/arquivo.md>`"
+
+Se o usuário não especificou nome nenhum, listar todas as ativas e perguntar:
 
 > "Qual dessas você quer arquivar?"
 > 1. fork-graphify-proxy.md
