@@ -30,6 +30,17 @@ Nas próximas execuções, ler desse arquivo.
 3. Criar um nome curto pro arquivo (kebab-case, sem acentos, max 40 chars) que resuma o assunto
 4. Salvar em `<diretorio-configurado>/<nome-curto>.md`
 
+### Ação 1b: Copiar plano e conteúdo extra referenciado
+
+**SEMPRE que a tarefa fizer referência a um plano ou documento externo,** copiar esse conteúdo para o diretório de tarefas também:
+
+- Se existe um plano em `~/.claude/plans/<nome>.md` que foi mencionado na conversa, copiar para `<diretorio-configurado>/<nome-tarefa>-plano.md`
+- Se existe conteúdo extra relevante (explicação longa, snippet, análise) que não coube na tarefa principal, salvar como `<diretorio-configurado>/<nome-tarefa>-extra.md`
+- No arquivo da tarefa principal, referenciar com link relativo: `[plano detalhado](./<nome-tarefa>-plano.md)`
+- Se o conteúdo extra já está em outro lugar (ex: `graphify-out/GRAPH_REPORT.md`), avaliar se vale copiar ou só linkar com caminho absoluto. Se for estável e pequeno, copiar. Se for grande ou regenerável, linkar.
+
+**Por que isso importa:** o diretório de tarefas vira o "single source of truth" — quando o usuário for executar a tarefa no futuro, todo o contexto está lá, mesmo que o plano original em `~/.claude/plans/` já tenha sido sobrescrito ou apagado.
+
 ### Formato do arquivo
 
 ```markdown
@@ -92,5 +103,5 @@ Se o usuário não especificou nome nenhum, listar todas as ativas e perguntar:
 - O conteúdo deve ser direto e acionável — checklist com `- [ ]`, não parágrafos longos
 - Sempre incluir a data de criação no final
 - Nunca inventar passos — só o que o usuário mencionou ou foi discutido na conversa
-- Ao salvar: "✅ Tarefa salva: `<caminho-completo>`"
-- Ao arquivar: adicionar "Concluída em: data" e mover pra `done/`
+- Ao salvar: "✅ Tarefa salva: `<caminho-completo>`" e listar também os arquivos auxiliares copiados (plano, extra)
+- Ao arquivar: adicionar "Concluída em: data" e mover pra `done/` (mover também os auxiliares: `-plano.md`, `-extra.md`)

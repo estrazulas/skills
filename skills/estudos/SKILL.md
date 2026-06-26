@@ -136,26 +136,11 @@ flowchart TD
 7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
 8. Confirm: "✅ <title> processed and saved!"
 
-### Step 4 — Commit changes to skills repo (with confirmation)
+### Step 4 — Clear context and continue
 
-1. **Explain and confirm before committing** — tell the user what files were changed:
-   > "New file: `~/Desktop/conteudoestudos/<video-title>.md`"
-   > "Updated: `~/Desktop/conteudoestudos/.processed` (+video_id `<id>`)"
-   > "Shall I commit and push these changes to `~/git/skills/`?"
-2. Wait for the user's response. If they say "n" or "no", skip the commit entirely.
-   - If they approve ("y", "yes", "sim", "ok"): proceed with commit
-3. `cd ~/git/skills`
-4. Load `caveman-commit` skill — it outputs a commit message as a code block (subject ≤50 chars, body only if needed)
-5. Use that message: `git add -A && git commit -m "<the caveman-commit message>"`
-6. `git push`
-7. Confirm: "✅ Changes committed and pushed to git/skills repo."
-
-### Step 5 — Clear context and continue
-
-After confirming the video was saved **and** the repo was committed+ pushed, **always** end with this exact message:
+After confirming the video was saved, **always** end with this exact message:
 
 > ✅ `<title>` saved to `~/Desktop/conteudoestudos/`
-> ✅ Changes committed and pushed to `~/git/skills/`
 > 🧹 **Type `/new` to clear context**, then send `update studies` again to process the next one.
 
 **NEVER** process more than one video in the same conversation. One video per session.
@@ -229,13 +214,7 @@ If unable to extract the `video_id`, respond:
 6. Save as `~/Desktop/conteudoestudos/<video-title>.md`
 7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
 8. Confirm: "✅ `<title>` processed from direct link and saved!"
-9. **Explain and confirm before committing** — tell the user what files were changed:
-   > "New file: `~/Desktop/conteudoestudos/<video-title>.md`"
-   > "Updated: `~/Desktop/conteudoestudos/.processed` (+video_id `<id>`)"
-   > "Shall I commit and push to `~/git/skills/`?"
-10. Wait for the user's response. If "n" or "no", skip commit entirely.
-    - If approved: `cd ~/git/skills`, load caveman-commit, `git add -A && git commit -m "..."`, `git push`
-11. End with the context cleanup message:
+9. End with the context cleanup message:
 
 > ✅ `<title>` saved to `~/Desktop/conteudoestudos/`
 > 🧹 **Type `/new` to clear context**, then send `update studies` again to process the next one.
