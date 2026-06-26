@@ -1,0 +1,88 @@
+---
+name: tarefa
+description: "Salva tarefas e ideias como .md numa pasta do usuário. Use quando o usuário disser 'salva isso nas tarefas', 'adiciona pra fazer', 'anota como tarefa', 'cria um todo', 'lembrete', 'não esquece de', '/tarefa', '/todo'. Também arquiva tarefas concluídas: 'arquiva a tarefa X', 'marca como feito', '/done'."
+---
+
+# Tarefa — salvar e arquivar ideias
+
+## Quando usar
+
+O usuário pede pra:
+- **Salvar** uma tarefa nova: "salva isso nas minhas tarefas", "adiciona isso pra fazer", "cria um todo disso", "anota lá", "/tarefa", "/todo", "lembrete: ...", "não esquece de ..."
+- **Arquivar** uma tarefa concluída: "arquiva a tarefa X", "marca como feito", "essa já foi", "/done"
+
+## Primeira execução — perguntar o diretório
+
+Se nenhum diretório de tarefas foi configurado antes, perguntar ao usuário:
+
+> "Qual pasta você quer usar pras tarefas? (ex: ~/Desktop/tarefas-todo)"
+
+Anotar o caminho e usar daí pra frente. Guardar o diretório escolhido no arquivo `~/.claude/skills/tarefa/.config` (só o path, uma linha).
+
+Nas próximas execuções, ler desse arquivo.
+
+---
+
+## Ação 1: Salvar tarefa nova
+
+1. Se `~/.claude/skills/tarefa/.config` não existe, perguntar o diretório
+2. Entender o que é a tarefa — pode ser uma ideia, um lembrete, um estudo futuro, um bug pra resolver
+3. Criar um nome curto pro arquivo (kebab-case, sem acentos, max 40 chars) que resuma o assunto
+4. Salvar em `<diretorio-configurado>/<nome-curto>.md`
+
+### Formato do arquivo
+
+```markdown
+# Tarefa: <título curto e descritivo>
+
+## Contexto
+
+<2-3 frases: de onde veio essa ideia, por que importa, o que estava sendo discutido quando surgiu>
+
+## O que fazer
+
+- [ ] <passo concreto 1>
+- [ ] <passo concreto 2>
+- [ ] <passo concreto 3>
+
+## Notas
+
+<links, referências, comandos, pessoas envolvidas, qualquer coisa relevante pra quando for executar>
+
+---
+
+Criado em: <data atual>
+```
+
+---
+
+## Ação 2: Arquivar tarefa concluída
+
+Quando o usuário diz que uma tarefa foi feita:
+
+1. Listar os arquivos `.md` da pasta de tarefas (excluindo o `done/`) pra mostrar quais existem
+2. Se o usuário já especificou qual tarefa, identificar o arquivo correspondente
+3. Criar o diretório `done/` dentro da pasta de tarefas se não existir
+4. Adicionar no final do arquivo: `Concluída em: <data de hoje>`
+5. Mover o arquivo de `<diretorio>/arquivo.md` para `<diretorio>/done/arquivo.md`
+6. Confirmar: "✅ Tarefa arquivada: `<diretorio>/done/arquivo.md`"
+
+Se não souber qual arquivo o usuário quer arquivar, listar e perguntar:
+
+> "Qual dessas você quer arquivar?"
+> 1. fork-graphify-proxy.md
+> 2. estudo-websockets.md
+> 3. bug-login-timeout.md
+
+---
+
+## Regras
+
+- O nome do arquivo é sempre curto: `tipo-assunto.md` (ex: `fork-graphify-proxy.md`, `estudo-websockets.md`, `bug-login-timeout.md`)
+- Se a pasta configurada não existir, avisa que precisa criar
+- Se já existir um arquivo com nome parecido, pergunta se quer sobrescrever ou complementar
+- O conteúdo deve ser direto e acionável — checklist com `- [ ]`, não parágrafos longos
+- Sempre incluir a data de criação no final
+- Nunca inventar passos — só o que o usuário mencionou ou foi discutido na conversa
+- Ao salvar: "✅ Tarefa salva: `<caminho-completo>`"
+- Ao arquivar: adicionar "Concluída em: data" e mover pra `done/`
