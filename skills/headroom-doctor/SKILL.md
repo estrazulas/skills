@@ -190,6 +190,8 @@ curl -s http://localhost:6333/healthz  # Deve retornar "ok"
 O auth bootstrap nunca foi concluído. Execute (com Neo4j rodando):
 
 ```bash
+# O export carrega todas as vars do env no shell atual — necessário para
+# o CLI headroom auth conectar no Neo4j e acessar o HEADROOM_ENCRYPTION_KEY.
 export $(grep -v '^#' ~/.config/headroom/env | xargs)
 headroom auth init-db -y
 headroom auth create-user admin --role admin --team admin
@@ -199,6 +201,53 @@ headroom auth set-provider-key admin anthropic
 # Edite ~/.config/headroom/env com as chaves geradas
 systemctl --user restart headroom.service
 ```
+
+> ⚠️ **Importante:** `export $(grep -v '^#' ~/.config/headroom/env | xargs)` é essencial antes de QUALQUER comando `headroom auth`. Sem isso, o CLI não tem `NEO4J_PASSWORD` nem `HEADROOM_ENCRYPTION_KEY` no ambiente e os comandos falham com `AuthError`.
+
+### Cenário F: "headroom usage summary falha com Neo4j AuthError"
+
+O CLI `headroom usage` **não** carrega automaticamente `~/.config/headroom/env`. Ele só lê `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` e `HEADROOM_API_KEY` do ambiente do shell. Sem essas vars, `NEO4J_PASSWORD` vira `""` (string vazia) e o Neo4j rejeita com:
+
+```
+neo4j.exceptions.AuthError: Unsupported authentication token, missing key `credentials`
+```
+
+O proxy **systemd** funciona porque o serviço tem `EnvironmentFile=~/.config/headroom/env` — o arquivo é carregado automaticamente. Mas o CLI roda no seu shell, não no systemd, então depende de você.
+
+**Solução — carregue o env antes:**
+
+```bash
+source ~/.config/headroom/env && headroom usage summary
+source ~/.config/headroom/env && headroom usage top
+source ~/.config/headroom/env && headroom usage team admin
+source ~/.config/headroom/env && headroom usage search "consulta"
+```
+
+> ⚠️ **Isso NÃO está documentado** no `headroom usage --help`, no README, nem no código fonte. O código (`usage/store.py` linha 36) usa `os.environ.get("NEO4J_PASSWORD", "")` — sem `source` no env, o fallback `""` quebra a autenticação.
+
+### Cenário G: "headroom auth quebra com Neo4j AuthError ou HEADROOM_ENCRYPTION_KEY not set"
+
+`headroom auth` é afetado pelo **mesmo problema** do `headroom usage`: o CLI **não** carrega `~/.config/headroom/env` automaticamente. Cada comando lê vars específicas do ambiente do shell:
+
+| Comando | Var necessária | Erro se faltar |
+|---------|---------------|----------------|
+| QUAISQUER comando `auth` | `NEO4J_URI` + `NEO4J_USER` + `NEO4J_PASSWORD` | `AuthError: Unsupported authentication token, missing key 'credentials'` |
+| `auth set-provider-key` | `HEADROOM_ENCRYPTION_KEY` (além das de Neo4j) | `HEADROOM_ENCRYPTION_KEY is not set` |
+| `auth whoami`, `auth list-users --self` | `HEADROOM_API_KEY` ou `HEADROOM_AUTH_USER` | Falha de autenticação ou "not found" |
+
+**Solução — sempre carregue o env antes:**
+
+```bash
+source ~/.config/headroom/env && headroom auth init-db -y
+source ~/.config/headroom/env && headroom auth create-user joao --role developer --team backend
+source ~/.config/headroom/env && headroom auth list-users
+source ~/.config/headroom/env && headroom auth create-key admin
+source ~/.config/headroom/env && headroom auth set-provider-key admin anthropic
+source ~/.config/headroom/env && headroom auth whoami
+source ~/.config/headroom/env && headroom auth generate-key
+```
+
+> 💡 O Cenário D usa `export $(grep ...)` que também funciona (inclusive para a mesma sessão), mas o `source` é mais simples e legível.
 
 ### Cenário E: "Symlink deepclaudehr quebrado"
 
@@ -246,3 +295,4 @@ cd ~/git/deepclaude_with_headroom && docker compose up -d && sleep 10 && systemc
 - A unidade systemd bloqueia ranges de IP privados (`IPAddressDeny`) — o proxy alcança a internet mas NÃO alcança `localhost` via `127.0.0.1`? Verifique: o Docker expõe as portas em `0.0.0.0`, então o proxy acessa via rede Docker (`172.22.0.x`) e NÃO por `localhost`. Se mudar as portas do docker-compose de `0.0.0.0` para `127.0.0.1`, o proxy não conseguirá alcançar os containers.
 - O proxy depende dos containers Docker para funcionalidade completa (auth + busca semântica), mas consegue iniciar sem eles — apenas reporta erros quando requisições autenticadas chegam
 - Use `headroom_usage` skill para ver estatísticas de economia do proxy quando ele estiver saudável
+- O CLI `headroom usage` **não** carrega `~/.config/headroom/env` automaticamente — sempre faça `source ~/.config/headroom/env && headroom usage ...` no shell. Se o erro for `AuthError: missing key credentials`, é esse o motivo.
