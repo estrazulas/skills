@@ -136,6 +136,27 @@ flowchart TD
 7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
 8. Confirm: "✅ <title> processed and saved!"
 
+### Step 3b — Improve text for leigos (optional)
+
+After saving the file and marking as processed, ask the user **exactly** this question:
+
+> "Deseja que eu melhore o texto do arquivo com exemplos e explicacoes mais faceis para leigos usando o modelo DeepSeek v4 Pro? (s/n)"
+
+- If they say "s", "sim", "yes", "y":
+  1. Read the saved file
+  2. Download the transcript again from the video (you still have the `video_id`)
+  3. Switch the session model to `deepseek-v4-pro` (provider will be determined by current config)
+  4. Regenerate the file with:
+     - Same core content and structure (topicos, diagramas Mermaid, tabelas, resumo geral)
+     - **Texto mais fluido e didatico** — linguagem simples, analogias do dia a dia
+     - **Exemplos concretos pra cada conceito** — situacoes que um leigo consegue visualizar
+     - Menos jargão técnico, mais explicacoes
+     - Mantenha os diagramas Mermaid (com as mesmas regras de labels sem acentos)
+  5. Replace the file content (overwrite)
+  6. Confirm: "✅ Texto melhorado com DeepSeek v4 Pro!"
+
+- If they say "n", "nao", "no", skip this step
+
 ### Step 4 — Clear context and continue
 
 After confirming the video was saved, **always** end with this exact message:
