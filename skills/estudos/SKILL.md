@@ -49,6 +49,8 @@ Classic interactive flow: choose playlist → choose video → process.
 ```markdown
 # <Video Title>
 
+**Link:** https://www.youtube.com/watch?v=<video_id>
+
 ## Mind Map
 ### <Main Topic 1>
 - detail
@@ -126,10 +128,10 @@ flowchart TD
 7. Run `python3 ~/.hermes/skills/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports
 8. If any violation found, FIX IT in the content before writing the file
 
-4. **Show and confirm before saving** — present the full mind map content to the user and explain what will happen:
+4. **Show and confirm before saving** — present the full mind map content (including the YouTube link at the top) to the user and explain what will happen:
    > \"Here's the generated mind map for **<title>** — shall I save it to `~/Desktop/conteudoestudos/<video-title>.md` and mark it as processed?\"
 
-5. Wait for the user's response. If they say "n" or "no", ask what to change — do NOT save anything yet.
+5. Wait for the user's response. If they say \"n\" or \"no\", ask what to change — do NOT save anything yet.
    - If they approve (\"y\", \"yes\", \"sim\", \"ok\"): save the file as `~/Desktop/conteudoestudos/<video-title>.md`
 
 6. Save as `~/Desktop/conteudoestudos/<video-title>.md`
@@ -227,7 +229,7 @@ If unable to extract the `video_id`, respond:
 1. Get video metadata with `mcp__youtube-management__youtube_get_video` for the title (use `video_id` parameter)
 2. Get the transcript — follow the **[Transcript Retrieval Fallback Strategy](#transcript-retrieval---fallback-strategy)** below
    - If there is **NO transcript** after trying both tools: say `⏭️ no transcript for video <video_id>. Cannot process this one.`
-3. Generate the mind map content using the same format as Mode 1. Keep it in memory — do NOT save to disk yet.
+3. Generate the mind map content using the same format as Mode 1 (including the YouTube link at the top). Keep it in memory — do NOT save to disk yet.
 4. **Show and confirm before saving** — present the full mind map content:
    > "Here's the generated mind map for **<title>** — shall I save it to `~/Desktop/conteudoestudos/<video-title>.md` and mark it as processed?"
 5. Wait for the user's response. If they say "n" or "no", ask what to change — do NOT save anything yet.
