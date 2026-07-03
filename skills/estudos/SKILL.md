@@ -44,7 +44,7 @@ Classic interactive flow: choose playlist → choose video → process.
    - If there is **NO transcript** after trying both tools: say "⏭️ no transcript: <title>" and go back to step 2
 2. **Confirmation** — show the video title and duration, then ask: **"Process this video? (y/n)"**
    - Wait for the user to respond. If "n" or "no", go back to step 2
-3. Using the transcript, generate the mind map content (BOTH markdown mind map AND multiple small Mermaid treeview diagrams). Keep it in memory — do NOT save to disk yet. The output must include:
+3. Using the transcript, generate the mind map content (BOTH markdown mind map AND multiple small Mermaid treeview diagrams). Keep it in memory — do NOT save to disk yet. The file template is:
 
 ```markdown
 # <Video Title>
@@ -52,7 +52,7 @@ Classic interactive flow: choose playlist → choose video → process.
 **Link:** https://www.youtube.com/watch?v=<video_id>
 
 ## Mind Map
-### <Main Topic 1>
+### <Main Topic 1> [MM:SS](https://youtu.be/<video_id>?t=SSS)  ← timestamp opcional
 - detail
 - detail
 ### <Main Topic 2>
@@ -138,7 +138,29 @@ flowchart TD
 7. Add the `video_id` to `~/Desktop/conteudoestudos/.processed`
 8. Confirm: "✅ <title> processed and saved!"
 
-### Step 3b — Improve text for leigos (optional)
+### Step 3a — Perguntar sobre timestamps (opcional)
+
+After generating the mind map content (step 3) and running the Mermaid verification (steps 4-8 below), BEFORE showing to the user for confirmation:
+
+Ask the user **exactly** this question:
+
+> "Deseja adicionar links com timestamps nos topicos gerais para ir direto ao ponto no video? (s/n)"
+
+- **Link no topo** do arquivo (`**Link:** https://...`) e SEMPRE gerado, independente da resposta
+- Os timestamps vao nos cabecalhos `###` de cada topico geral no **Mind Map** (secao de texto, NAO nos diagramas Mermaid)
+
+If the user says "s", "sim", "yes", "y":
+  1. Get the transcript WITH timestamps using the Python library directly (see **[Timestamp Retrieval Strategy](#timestamp-retrieval-strategy)** below)
+  2. For each major topic in the mind map, find the approximate start timestamp and add it to the `###` header:
+     ```
+     ### O Problema: Vibe DevOps [05:00](https://youtu.be/<video_id>?t=300)
+     ```
+  3. Use `MM:SS` format for display and `?t=SSS` (segundos) no link
+  4. Update the content in memory before showing to the user
+
+If they say "n", "nao", "no", skip this step — proceed directly to show/confirm.
+
+### Step 4 — Show and confirm before saving
 
 After saving the file and marking as processed, ask the user **exactly** this question:
 
@@ -230,6 +252,7 @@ If unable to extract the `video_id`, respond:
 2. Get the transcript — follow the **[Transcript Retrieval Fallback Strategy](#transcript-retrieval---fallback-strategy)** below
    - If there is **NO transcript** after trying both tools: say `⏭️ no transcript for video <video_id>. Cannot process this one.`
 3. Generate the mind map content using the same format as Mode 1 (including the YouTube link at the top). Keep it in memory — do NOT save to disk yet.
+   - After generating, follow the same **Step 3a — Perguntar sobre timestamps (opcional)** flow from Mode 1
 4. **Show and confirm before saving** — present the full mind map content:
    > "Here's the generated mind map for **<title>** — shall I save it to `~/Desktop/conteudoestudos/<video-title>.md` and mark it as processed?"
 5. Wait for the user's response. If they say "n" or "no", ask what to change — do NOT save anything yet.
@@ -287,6 +310,40 @@ Two different MCP servers provide transcript access. If one fails, try the other
 | 2 | `mcp__youtube-transcript__get-transcript` | `url=https://youtu.be/hh6N9knL_Ng` | ❌ Video unavailable |
 | 3 | `mcp__youtube-management__youtube_get_transcript` | `video_id=hh6N9knL_Ng` | ⚠️ "Available languages: pt" |
 | 4 | `mcp__youtube-management__youtube_get_transcript` | `video_id=hh6N9knL_Ng, language=pt` | ✅ Full transcript |
+
+---
+
+## Timestamp Retrieval Strategy
+
+When the user wants timestamps on topic headers, use the Python library directly (the MCP tools do NOT return timestamps).
+
+### How to get transcript with timestamps
+
+Use a Python script in `terminal()` or `execute_code()`:
+
+```python
+from youtube_transcript_api import YouTubeTranscriptApi
+
+api = YouTubeTranscriptApi()
+transcript = api.fetch('<video_id>', languages=['pt'])
+segs = list(transcript)
+
+# Each seg has: seg.start (seconds), seg.duration (seconds), seg.text
+# seg.start gives you the exact timestamp in seconds
+```
+
+### How to find topic timestamps
+
+1. Get the full transcript WITH timestamps using the library above
+2. Build a minute-by-minute index of the content (group segments by minute)
+3. For each major topic in your mind map, search for keywords in the minute chunks to find where the topic starts
+4. Format as: `### Topic Name [MM:SS](https://youtu.be/<video_id>?t=SSS)`
+
+### Known issues
+
+- The `mcp__youtube-transcript__get-transcript` tool does NOT support the new library API (broken — `AttributeError: 'list_transcripts'`)
+- Always use the Python library directly via `terminal()` or `execute_code()` for timestamp retrieval
+- The library may return fragmented segments (each a few words) — group them by minute for searching
 
 ---
 
