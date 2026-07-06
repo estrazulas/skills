@@ -50,6 +50,14 @@ Quando o token expirar (o script vai mostrar "Token invalido ou expirado"):
    ```
 6. Salve o arquivo
 
+## Entrega no WhatsApp
+
+Por padrao o resultado vem para o chat atual. Para receber no WhatsApp:
+/discord-reader --whatsapp
+/discord-reader --resumo --whatsapp
+
+O agente vai criar uma entrega unica via cron para o WhatsApp.
+
 ## Como configurar outro canal padrao
 
 Edite `.env` na pasta da skill e altere:
