@@ -97,7 +97,8 @@ Passa o numero do canal da lista.
 /discord-reader --add-canal "https://discord.com/channels/S/G/C" "Nome do canal - Descricao"
 ```
 
-Salva na lista pra usar depois.
+Apos adicionar, o agente PERGUNTA se quer criar um cron para monitorar o novo canal.
+Se sim, escolha a frequencia (ex: "a cada 5h", "a cada 2d"). O agente cria o script e o cron job automaticamente.
 
 ### Canal padrao (FreeStuff)
 
