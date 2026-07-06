@@ -58,6 +58,18 @@ Por padrao o resultado vem para o chat atual. Para receber no WhatsApp:
 
 O agente vai criar uma entrega unica via cron para o WhatsApp.
 
+## Fluxo interativo de topicos
+
+Quando o usuario pedir o resumo padrao (`--resumo`), o agente deve:
+
+1. Executar o script com `--resumo` e mostrar o resultado
+2. Perguntar: "Quer que eu detalhe algum topico quente? (1, 2, 3... ou 'nao')"
+3. Se o usuario escolher um numero, pegar as mensagens BRUTAS do canal (sem --resumo) e fazer uma analise aprofundada especifica daquele topico, mostrando:
+   - Quem falou o que (com timestamps)
+   - A sequencia cronologica da discussao
+   - Decisoes tomadas ou pontos em aberto
+4. Apos detalhar, perguntar se quer detalhar outro topico ou se esta bom
+
 ## Como configurar outro canal padrao
 
 Edite `.env` na pasta da skill e altere:
