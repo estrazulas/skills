@@ -236,6 +236,8 @@ def main():
     parser.add_argument("--lista", action="store_true", help="Lista canais favoritos")
     parser.add_argument("--add-canal", nargs=2, metavar=("LINK", "DESCRICAO"),
                         help="Adiciona canal aos favoritos: LINK DESCRICAO")
+    parser.add_argument("--cron", action="store_true",
+                        help="Modo cron: so mostra mensagens NAO lidas desde a ultima execucao")
     args = parser.parse_args()
 
     # Acoes especiais
@@ -251,6 +253,7 @@ def main():
     env = load_env()
     token = args.token or env.get("DISCORD_TOKEN")
     channel_id = None
+    channel_desc = ""
 
     if args.canal:
         # Tenta como numero da lista de favoritos
@@ -259,6 +262,7 @@ def main():
             idx = int(args.canal) - 1
             if 0 <= idx < len(favorites):
                 channel_id = parse_channel_arg(favorites[idx][0])
+                channel_desc = favorites[idx][1]
                 if not channel_id:
                     print(f"ERRO: Link invalido nos favoritos: {favorites[idx][0]}", file=sys.stderr)
                     sys.exit(1)
@@ -275,6 +279,7 @@ def main():
         favorites, _ = load_favorites()
         if favorites:
             channel_id = parse_channel_arg(favorites[0][0])
+            channel_desc = favorites[0][1]
 
     if not token:
         print("ERRO: Token nao encontrado.", file=sys.stderr)
@@ -283,9 +288,70 @@ def main():
 
     if not channel_id:
         print("ERRO: Canal nao informado.", file=sys.stderr)
-        print("Use --canal LINK ou configure DISCORD_DEFAULT_CHANNEL no .env", file=sys.stderr)
+        print("Use --canal LINK ou configure o primeiro favorito", file=sys.stderr)
         sys.exit(1)
 
+    # --- MODO CRON: so mensagens novas desde a ultima leitura ---
+    if args.cron:
+        skill_dir = os.path.dirname(os.path.abspath(__file__))
+        last_read_file = os.path.join(skill_dir, f".last_read_{channel_id}")
+        last_id = None
+        if os.path.exists(last_read_file):
+            with open(last_read_file) as f:
+                last_id = f.read().strip()
+
+        if last_id:
+            # Pega mensagens depois do ultimo ID lido
+            headers = {
+                "Authorization": token,
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+            }
+            url = f"{API_BASE}/channels/{channel_id}/messages?after={last_id}&limit=100"
+            r = requests.get(url, headers=headers, timeout=15)
+            if r.status_code == 200:
+                messages = r.json()
+            else:
+                print(f"ERRO: HTTP {r.status_code}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            # Primeira execucao: pega as ultimas 5 so pra marcar o inicio
+            headers = {
+                "Authorization": token,
+                "User-Agent": "Mozilla/5.0",
+            }
+            url = f"{API_BASE}/channels/{channel_id}/messages?limit=5"
+            r = requests.get(url, headers=headers, timeout=15)
+            if r.status_code == 200:
+                messages = r.json()
+            else:
+                print(f"ERRO: HTTP {r.status_code}", file=sys.stderr)
+                sys.exit(1)
+            # Salva o ID da mais recente e sai (silencioso na primeira vez)
+            if messages:
+                with open(last_read_file, "w") as f:
+                    f.write(messages[0]["id"])
+            # Silencio na primeira execucao
+            return
+
+        if not messages:
+            # Sem mensagens novas - silencio total
+            return
+
+        # Salva o ID da mensagem mais recente
+        with open(last_read_file, "w") as f:
+            f.write(messages[0]["id"])
+
+        texto = format_messages(list(reversed(messages)))
+        cabecalho = f"[CRON] {channel_desc or 'Canal'} - {len(messages)} novas mensagens\n"
+        cabecalho += "=" * 40 + "\n"
+
+        if args.resumo:
+            print(cabecalho + resumir(texto))
+        else:
+            print(cabecalho + texto)
+        return
+
+    # --- MODO NORMAL ---
     messages = fetch_messages(channel_id, token, args.ultimas)
     if not messages:
         print("Nenhuma mensagem encontrada.", file=sys.stderr)

@@ -127,3 +127,26 @@ O script `discord-reader.py` esta na mesma pasta. Aceita:
 | `--resumo` | Gera resumo com IA |
 | `--horas N` | Janela de horas (padrao: 24) |
 | `--ultimas N` | Ultimas N msgs (padrao: 50) |
+| `--lista` | Lista canais favoritos |
+| `--add-canal LINK DESCR` | Adiciona canal favorito |
+| `--cron` | Modo cron: so mostra mensagens NAO lidas |
+
+## Cron job automatico
+
+Para monitorar um canal a cada 5h sem receber mensagens repetidas:
+
+```
+/discord-reader --cron
+```
+
+Na primeira execucao, o script salva um checkpoint (ultimo ID lido) e sai em silencio.
+Nas proximas execucoes, ele pega SOMENTE mensagens depois daquele ID.
+Se nao houver nada novo, nao entrega nada.
+
+### Exemplo de cron criado
+
+O job `Discord Headroom - monitor 5h` ja esta rodando:
+- Canal: Headroom General
+- Frequencia: a cada 5h
+- Entrega: WhatsApp (se tiver novidades)
+- Silencio se nao tiver nada novo
