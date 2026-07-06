@@ -1,2 +1,5 @@
 # Token de autenticação do Discord
 .env
+
+# Lista de canais favoritos (dados pessoais)
+.favorite_channels

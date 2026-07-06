@@ -1,0 +1,6 @@
+# Canais favoritos do Discord
+# Formato: LINK|DESCRICAO
+# Adicione novos canais com: /discord-reader --add-canal "LINK" "DESCRICAO"
+
+https://discord.com/channels/SERVIDOR_ID/CANAL_ID|Meu Canal - Descricao
+https://discord.com/channels/000000000000000000/000000000000000000|Outro Canal - Descricao
