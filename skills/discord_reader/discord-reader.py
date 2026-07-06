@@ -192,14 +192,60 @@ Resumo em portugues brasileiro:"""
         return f"[Erro no resumo: {e}]"
 
 
+def load_favorites():
+    """Carrega a lista de canais favoritos."""
+    fav_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".favorite_channels")
+    favorites = []
+    if os.path.exists(fav_file):
+        with open(fav_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and "|" in line:
+                    parts = line.split("|", 1)
+                    favorites.append((parts[0].strip(), parts[1].strip() if len(parts) > 1 else ""))
+    return favorites, fav_file
+
+
+def add_favorite(link, descricao):
+    """Adiciona um canal aos favoritos."""
+    fav_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".favorite_channels")
+    with open(fav_file, "a") as f:
+        f.write(f"{link}|{descricao}\n")
+    print(f"Canal adicionado: {descricao}", file=sys.stderr)
+
+
+def list_favorites():
+    """Lista os canais favoritos."""
+    favorites, _ = load_favorites()
+    if not favorites:
+        print("Nenhum canal favorito salvo.", file=sys.stderr)
+        return
+    print("Canais favoritos:")
+    for i, (link, desc) in enumerate(favorites, 1):
+        print(f"  {i}. {desc}")
+        print(f"     {link}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Leitor de canais do Discord")
-    parser.add_argument("--canal", help="Link do canal ou ID numerico")
+    parser.add_argument("--canal", help="Link do canal, ID numerico, ou numero da lista de favoritos")
     parser.add_argument("--token", help="Token de autorizacao (sobrescreve .env)")
     parser.add_argument("--resumo", action="store_true", help="Gera resumo com IA")
     parser.add_argument("--horas", type=int, default=24, help="Janela de horas (padrao: 24)")
     parser.add_argument("--ultimas", type=int, default=50, help="Ultimas N mensagens (padrao: 50)")
+    parser.add_argument("--lista", action="store_true", help="Lista canais favoritos")
+    parser.add_argument("--add-canal", nargs=2, metavar=("LINK", "DESCRICAO"),
+                        help="Adiciona canal aos favoritos: LINK DESCRICAO")
     args = parser.parse_args()
+
+    # Acoes especiais
+    if args.lista:
+        list_favorites()
+        return
+
+    if args.add_canal:
+        add_favorite(args.add_canal[0], args.add_canal[1])
+        return
 
     # Carrega .env
     env = load_env()
@@ -207,12 +253,28 @@ def main():
     channel_id = None
 
     if args.canal:
-        channel_id = parse_channel_arg(args.canal)
-        if not channel_id:
-            print(f"ERRO: Nao foi possivel extrair o ID do canal de: {args.canal}", file=sys.stderr)
-            sys.exit(1)
+        # Tenta como numero da lista de favoritos
+        if args.canal.isdigit():
+            favorites, _ = load_favorites()
+            idx = int(args.canal) - 1
+            if 0 <= idx < len(favorites):
+                channel_id = parse_channel_arg(favorites[idx][0])
+                if not channel_id:
+                    print(f"ERRO: Link invalido nos favoritos: {favorites[idx][0]}", file=sys.stderr)
+                    sys.exit(1)
+            else:
+                print(f"ERRO: Canal {args.canal} nao encontrado. Use --lista pra ver os disponiveis.", file=sys.stderr)
+                sys.exit(1)
+        else:
+            channel_id = parse_channel_arg(args.canal)
+            if not channel_id:
+                print(f"ERRO: Nao foi possivel extrair o ID do canal de: {args.canal}", file=sys.stderr)
+                sys.exit(1)
     else:
-        channel_id = env.get("DISCORD_DEFAULT_CHANNEL")
+        # Usa o primeiro favorito como padrao
+        favorites, _ = load_favorites()
+        if favorites:
+            channel_id = parse_channel_arg(favorites[0][0])
 
     if not token:
         print("ERRO: Token nao encontrado.", file=sys.stderr)

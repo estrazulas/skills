@@ -70,15 +70,41 @@ Quando o usuario pedir o resumo padrao (`--resumo`), o agente deve:
    - Decisoes tomadas ou pontos em aberto
 4. Apos detalhar, perguntar se quer detalhar outro topico ou se esta bom
 
-## Como configurar outro canal padrao
+## Canais favoritos
 
-Edite `.env` na pasta da skill e altere:
+A skill mantem uma lista de canais favoritos em `.favorite_channels`.
 
+### Listar canais salvos
+
+```
+/discord-reader --lista
+```
+
+Mostra os canais com numeros pra escolher.
+
+### Escolher um canal salvo
+
+```
+/discord-reader 1
+/discord-reader 2 --resumo
+```
+
+Passa o numero do canal da lista.
+
+### Adicionar novo canal
+
+```
+/discord-reader --add-canal "https://discord.com/channels/S/G/C" "Nome do canal - Descricao"
+```
+
+Salva na lista pra usar depois.
+
+### Canal padrao (FreeStuff)
+
+Se nao passar nada, usa o primeiro da lista. Ou configure no .env:
 ```
 DISCORD_DEFAULT_CHANNEL="ID_DO_CANAL"
 ```
-
-O ID esta no link do canal: `discord.com/channels/SERVIDOR/CANAL` — o ultimo numero.
 
 ## Estrutura de arquivos
 
