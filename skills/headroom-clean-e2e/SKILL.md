@@ -112,13 +112,14 @@ DETACH DELETE u
 RETURN count(u) AS deleted_users
 "
 
-# 3c. Deletar Teams de teste
+# 3c. Deletar Teams de teste (EXCLUI times reais: ai_tools_manager, backend, front-end)
 docker exec deepclaude_with_headroom-neo4j-1 cypher-shell -u neo4j -p "$NEO4J_PASS" "
 MATCH (t:Team)
-WHERE t.name STARTS WITH 'team_list_'
-   OR t.name STARTS WITH 'team_new_'
-   OR t.name STARTS WITH 'team_illegal_'
-   OR t.name STARTS WITH 'e2e-'
+WHERE (t.name STARTS WITH 'team_list_'
+    OR t.name STARTS WITH 'team_new_'
+    OR t.name STARTS WITH 'team_illegal_'
+    OR t.name STARTS WITH 'e2e-')
+  AND NOT t.name IN ['ai_tools_manager', 'backend', 'frontend']
 DETACH DELETE t
 RETURN count(t) AS deleted_teams
 "
@@ -162,6 +163,8 @@ Estado esperado após limpeza:
 - ❌ `admin` (username) — seu usuário
 - ❌ `k_7031cd24e789` (hr_bdcc5de) — chave ativa usada no proxy e admin UI
 - ❌ Roles base (admin, developer, team_lead, viewer) — criadas pelo `init-db`
+- ❌ Teams reais: `ai_tools_manager`, `backend`, `front-end` — usados pela organização
+- ❌ ApiKeys associadas ao usuário `admin` — necessárias para acesso ao proxy e admin UI
 - ❌ RequestLog — dados reais de uso
 
 ## Troubleshooting
