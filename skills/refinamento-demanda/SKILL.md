@@ -58,13 +58,15 @@ Pergunta 2: "Existe alguma base de issues, tickets ou histórias de usuário já
 
 Aguarde resposta. Registre.
 
-### Etapa 3 — Público do parecer
+### Etapa 3 — Confirmação do formato de saída
 
-**Padrão da skill:** gerar **dois arquivos separados** — um técnico (uso interno da equipe) e um para o solicitante (linguagem amigável, sem jargão). É o modo default; cobre ambos os públicos sem misturar linguagem no mesmo documento.
+A skill **sempre** gera **dois arquivos separados**:
+- Um técnico (`_tecnico.md`) — uso interno da equipe, com referências a código e estimativas.
+- Um para o solicitante (`_solicitante.md`) — linguagem amigável, sem jargão, com protótipos de tela.
 
-Pergunta 3: "O padrão é gerar dois arquivos separados: um técnico e um para o solicitante. Confirma esse padrão, ou prefere um único arquivo? Se um único, ele é: A) só técnico, B) só solicitante, ou C) misto (ambos no mesmo arquivo)?"
+Pergunta 3: "Ao final vou gerar dois arquivos: um técnico (pra equipe) e um pro solicitante (linguagem acessível). Alguma observação sobre isso antes de seguirmos?"
 
-Aguarde resposta. Se o usuário confirmar o padrão (ou responder algo equivalente a "dois arquivos separados"), prossiga no modo `dois arquivos`. Se pedir arquivo único, registre A/B/C.
+Aguarde resposta breve e prossiga.
 
 ### Etapa 4 — Recebimento da demanda
 
@@ -132,10 +134,6 @@ Antes de escrever, pergunte ao usuário:
 
 Aguarde resposta. Se o usuário responder "A" ou "C", crie o diretório se não existir. O `slug-da-demanda` é derivado do título curto (kebab-case, sem acentos, minúsculo).
 
-**Modo arquivo único** (quando a Etapa 3 retornou A/B/C):
-- Gere um único arquivo com sufixo correspondente: `_tecnico`, `_solicitante` ou (para misto) sem sufixo.
-- Ex.: `./questionamentos/{slug}_solicitante.md` ou `./questionamentos_ao_solicitante.md` (misto).
-
 **Steering-aware:** se o workspace tem regra explícita sobre onde salvar artefatos de análise (ex.: `data/alteracoes_DDMMYYYY/` no harness de issues do IFC), sugira esse caminho como opção D adicional e priorize-o na sugestão.
 
 **8.2 Escrever os arquivos**
@@ -144,9 +142,12 @@ Use ferramenta de escrita de arquivo (`fs_write`) para gravar cada arquivo no ca
 
 - **Arquivo técnico** (`_tecnico`): linguagem interna, referências a código (nomes de tabelas, controllers, policies, migrations), issues numeradas com prefixo `#`, prós/contras técnicos, esforço estimado por opção, estrutura de issues proposta, impacto em `perfis.md`, `caminhos.md`, `plano-desenvolvimento-issues.md` (quando existentes).
 - **Arquivo solicitante** (`_solicitante`): linguagem funcional acessível, sem jargão técnico. Foco em impacto no processo, UX, decisão de negócio. Nada de nomes de controller, migration, tabela ou classe. Explicita "o que muda na prática" para cada ator do processo. **Inclui protótipos textuais de tela** (wireframes ASCII/Markdown) sempre que uma decisão envolver campos novos, checkboxes condicionais, selects, uploads ou fluxos de formulário — isso ajuda o solicitante a visualizar o que está sendo proposto sem precisar imaginar a interface.
-- **Arquivo misto** (só quando o usuário pediu explicitamente C na Etapa 3): duas seções claramente delimitadas por cabeçalho de nível 1 — "Para a equipe técnica" e "Para o solicitante".
 
-**8.3 Confirmar gravação**
+**8.3 Pós-processamento com humanizer-pt-br**
+
+Após gravar o arquivo `_solicitante.md`, verifique se a skill `humanizer-pt-br` está disponível no ambiente. Se estiver, aplique-a sobre o conteúdo do arquivo do solicitante para remover traços de escrita de IA (linguagem promocional, estruturas mecânicas, vocabulário genérico, etc.) e reescreva o arquivo com a versão humanizada. O arquivo técnico **não** passa por esse filtro.
+
+**8.4 Confirmar gravação**
 
 Após gravar, avise no chat:
 
@@ -158,9 +159,7 @@ Após gravar, avise no chat:
 >
 > Quer que eu revise algum bloco antes de fechar? Ou já está pronto pra enviar ao solicitante?"
 
-No modo arquivo único, avise apenas um caminho.
-
-**8.4 Ajustes iterativos pós-gravação**
+**8.5 Ajustes iterativos pós-gravação**
 
 Se o usuário pedir ajuste em um bloco específico, edite o arquivo diretamente (não regenere do zero) e confirme a alteração. Só encerre quando o usuário disser que está pronto.
 
@@ -200,145 +199,20 @@ Para cada bloco funcional identificado na demanda, verifique se o texto responde
 
 ## Formato obrigatório dos arquivos de saída
 
-### Arquivo técnico — `{slug}_tecnico.md`
+Os templates completos estão em arquivos separados nesta mesma pasta:
 
-```markdown
-# Questionamentos ao Solicitante — [Título da demanda] (versão técnica)
+- **Arquivo técnico** — `{slug}_tecnico.md`: use #[[file:template_tecnico.md]] como estrutura base
+- **Arquivo solicitante** — `{slug}_solicitante.md`: use #[[file:template_solicitante.md]] como estrutura base
 
-**Data:** YYYY-MM-DD
-**Autor do parecer:** [preenchido pelo usuário ou "a preencher"]
-**Público-alvo:** interno / equipe técnica
-**Documento par:** `{slug}_solicitante.md`
+### Diretrizes por tipo de arquivo
 
-## 1. Demanda original (resumida)
-
-[Resumo em 5-10 linhas do que foi solicitado, com fidelidade ao texto original]
-
-## 2. Fontes consultadas
-
-- [lista de fontes verificadas — repositórios, wikis, issues, editais, trechos de código]
-- Ou: "Nenhuma fonte fornecida — análise feita apenas sobre o texto da demanda"
-
-## 3. Premissas do texto vs. realidade verificada
-
-- ✅ [premissa] — confirmada em [fonte/trecho]
-- ⚠️ [premissa] — existe parcialmente: [diferença]
-- ❌ [premissa] — não encontrada; consultei [o que foi consultado]
-- ❓ [premissa] — não verificável (sem fonte)
-
-## 4. Conceitos definidos durante o refinamento
-
-- **[Termo 1]**: definição consolidada.
-
-## 5. Decisões consolidadas (perguntas respondidas)
-
-Tabela resumo com # da pergunta, tópico e decisão.
-
-## 6. Perguntas em aberto (pendências)
-
-Lista numerada. Cada pendência com contexto do que trava.
-
-## 7. Recomendações — alternativas de solução
-
-Para cada bloco funcional identificado, 2-3 alternativas técnicas com prós/contras e esforço estimado.
-
-## 8. Estrutura de issues proposta
-
-Tabela com Ordem, Título sugerido, Depende de, Complexidade.
-
-## 9. Impacto em `perfis.md`, `caminhos.md` e `plano-desenvolvimento-issues.md`
-
-Diffs propostos, se esses artefatos existirem no workspace.
-
-## 10. Estimativa qualitativa
-
-- Tamanho aparente
-- Justificativa
-- Riscos principais
-- Pré-requisitos
-
-## 11. Próximos passos
-
-Checklist técnica.
-```
-
-### Arquivo solicitante — `{slug}_solicitante.md`
-
-```markdown
-# Questionamentos ao Solicitante — [Título da demanda] (versão para o setor)
-
-**Data:** DD/MM/YYYY
-**Autor do parecer:** [nome]
-**Público-alvo:** setor solicitante
-
-## O que entendemos da sua demanda
-
-[Resumo em linguagem clara, sem jargão. Enumera os grandes blocos do que foi pedido.]
-
-## Decisões que tomamos juntos
-
-Para cada bloco funcional, um sub-título com decisão em linguagem funcional:
-
-### [Bloco X]
-
-- Decisão 1 em linguagem acessível.
-- Decisão 2 em linguagem acessível.
-
-#### Como fica na tela (protótipo sugestivo)
-
-Sempre que uma decisão envolver campos novos, fluxos condicionais de formulário, uploads ou selects, incluir um wireframe textual (ASCII art ou Markdown formatado) que mostre:
-- Os inputs novos e seus rótulos
-- Comportamento condicional (ex.: checkbox marcado → abre select)
-- Feedback visual ao usuário (soma acumulada, mensagens de erro)
-
-Exemplo de formato:
-
-```
-┌─────────────────────────────────────────────────┐
-│ Critério de seleção: [ Análise Documental  ▼ ]  │
-│                                                 │
-│ ☑ Terá entrevista?                              │
-│   Peso da análise documental: [ 60 ]%           │
-│   Peso da entrevista:         [ 40 ]%           │
-│   Calendário da entrevista:   [ Entrev. 2026 ▼] │
-│                                                 │
-│ ☐ Terá convocação para nivelamento?             │
-│ ☑ Permitirá recursos?                           │
-│   Calendário de recurso:      [ Recurso 01  ▼ ] │
-└─────────────────────────────────────────────────┘
-```
-
-Regras:
-- Não desenhe todas as telas do sistema, só as decisões que envolvem interação nova.
-- Se o protótipo for extenso, quebre em blocos menores por seção.
-- Use caixas ASCII simples (┌─┐│└─┘) para delimitar painéis.
-- Use `[ texto ▼ ]` para selects, `[ ___ ]` para inputs, `☑`/`☐` para checkboxes, `○`/`●` para radio buttons, `[Botão]` para botões.
-
-## O que ainda precisa de decisão do setor
-
-Lista numerada das pendências, cada uma com contexto de negócio (não técnico) do que trava.
-
-## Sugestões nossas
-
-Recomendações em linguagem funcional — foco no impacto no processo/UX/decisão, sem detalhe técnico.
-
-## O que muda na prática
-
-Para cada ator do processo (candidato, coordenador, DEING, etc.), o que efetivamente será diferente.
-
-## Próximos passos
-
-Checklist funcional para o setor.
-```
-
-### Arquivo misto — `questionamentos_ao_solicitante.md` (só quando explicitamente solicitado na Etapa 3)
-
-Duas seções `# Para a equipe técnica` e `# Para o solicitante`, cada uma seguindo o formato correspondente acima.
+- **Arquivo técnico** (`_tecnico`): linguagem interna, referências a código (nomes de tabelas, controllers, policies, migrations), issues numeradas com prefixo `#`, prós/contras técnicos, esforço estimado por opção, estrutura de issues proposta, impacto em `perfis.md`, `caminhos.md`, `plano-desenvolvimento-issues.md` (quando existentes).
+- **Arquivo solicitante** (`_solicitante`): linguagem funcional acessível, sem jargão técnico. Foco em impacto no processo, UX, decisão de negócio. Nada de nomes de controller, migration, tabela ou classe. Explicita "o que muda na prática" para cada ator do processo. **Inclui protótipos textuais de tela** (wireframes ASCII/Markdown) sempre que uma decisão envolver campos novos, checkboxes condicionais, selects, uploads ou fluxos de formulário.
 
 ## Regras finais
 
 - **Execução direta obrigatória.** Nenhuma etapa desta skill pode ser delegada a subagente. Se for tentador delegar (ex.: "peça ao subagente para varrer a documentação"), pare e execute você mesmo com as ferramentas de leitura/busca disponíveis.
-- **Arquivos são a entrega, não opcional.** Não encerre a skill sem ter gerado os arquivos de questionamentos. Resumir em chat não substitui a gravação. Por padrão são dois (`_tecnico` + `_solicitante`); pode ser um único se solicitado explicitamente na Etapa 3.
+- **Arquivos são a entrega, não opcional.** Não encerre a skill sem ter gerado os dois arquivos de questionamentos (`_tecnico` + `_solicitante`). Resumir em chat não substitui a gravação.
 - **Uma pergunta por turno.** Nunca envie duas perguntas no mesmo turno, nem mesmo em alternativas encadeadas ("e também..."). Isso quebra a interatividade e frustra o usuário.
 - Nunca crie issues, specs ou arquivos de código a partir desta skill. Só os arquivos de questionamentos.
 - Se o usuário pedir "cria a issue direto", recuse educadamente e explique que essa é responsabilidade de outra skill (`#issue-format` ou equivalente) — o refinamento deve terminar primeiro.
