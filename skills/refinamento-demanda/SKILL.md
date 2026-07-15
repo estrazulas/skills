@@ -6,17 +6,26 @@ user-invocable: true
 inclusion: manual
 ---
 
-## ⚠️ Regra de execução — NÃO delegar para subagente
+## ⚠️ Regra de execução — Subagentes: quando pode e quando NÃO pode
 
-Esta skill deve rodar **inteiramente no fluxo de chat principal** com o usuário. É **proibido**:
+O **diálogo interativo** com o usuário (etapas 1 a 8) é **proibido** de delegar para subagente. É proibido:
 
-- Chamar `invoke_sub_agent` / `requirement-detailer` / `general-task-execution` ou qualquer outro subagente para conduzir o refinamento.
+- Chamar subagente para conduzir o refinamento (perguntar, interpretar respostas, decidir próximos passos).
 - Empacotar todas as perguntas num único prompt para um sub-processo.
-- Gerar o parecer completo sem antes ter conduzido as etapas 1 a 7 turno a turno com o usuário.
+- Gerar o parecer completo sem antes ter conduzido as perguntas turno a turno com o usuário.
 
 Motivo: a skill é **interativa por design**. Cada resposta do usuário altera o rumo das próximas perguntas. Um subagente autônomo não pode conduzir esse diálogo — ele executa em uma passada só e devolve um resultado fechado.
 
-Se o usuário digitou `/refinamento-demanda`, `#refinamento-demanda` ou algo equivalente, você (agente principal) executa. Não delegue.
+**Permitido**: delegar para subagentes **operações de varredura e pesquisa** que não envolvem o usuário:
+
+- Varrer documentação, wiki ou arquivos de apoio (Etapa 6)
+- Consultar base de issues/tickets (Etapa 2 — se for um volume grande)
+- Analisar repositório de código para validar premissas (Etapa 6 — se autorizado)
+- Pesquisar termos de domínio ou referências externas
+
+Essas operações são só de leitura/coleta. O subagente **não toma decisões**, **não faz perguntas ao usuário** e **não avança o fluxo**. Ele apenas retorna dados brutos que você (agente principal) interpreta e transforma na próxima pergunta ao usuário.
+
+Se o usuário digitou `/refinamento-demanda` ou equivalente, você (agente principal) executa o diálogo. Delegue apenas as varreduras.
 
 # Refinamento de Demanda — Analista de Requisitos
 
