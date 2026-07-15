@@ -162,6 +162,28 @@ Dois arquivos sao criados:
 - `questionamentos/renovacao-matricula_tecnico.md` — com linguagem interna, glossario, mapa de dependencias
 - `questionamentos/renovacao-matricula_solicitante.md` — com linguagem acessivel, wireframes, sem jargao
 
+## Fluxo recomendado de uso
+
+```
+Email vago do cliente ("Preciso de uma tela de matricula")
+        |
+        v
+refinamento-demanda-grill  ← "O que preciso perguntar pra ele?"
+        |                     (identifica lacunas, gera questionarios)
+        v
+   [cliente responde]
+        |
+        v
+criar-prd                  ← "Agora que tenho respostas, como escrevo
+        |                     a spec pro dev implementar?"
+        |                     (gera PRD com user stories, edge cases,
+        |                      milestones, criterios de aceite)
+        v
+   implementacao (dev ou IA)
+```
+
+**Regra de ouro**: `refinamento-demanda-grill` = fase de perguntas. `criar-prd` = fase de spec. Nao misturar — cada uma tem saida diferente.
+
 ## Quando usar cada versao
 
 | Cenario | Use |
