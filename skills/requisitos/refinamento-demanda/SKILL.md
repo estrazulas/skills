@@ -94,7 +94,10 @@ Rode os detectores de vaguidade ([`references/detectores.md`](references/detecto
 
 O usuario pode escolher uma alternativa, responder "nao sei" (vira pergunta em aberto), ou rejeitar todas (refina).
 
-**Criterio de conclusao**: todas as lacunas criticas tratadas (respondidas ou em aberto).
+**Criterio de conclusao:**
+- [ ] Cada detector de vaguidade (references/detectores.md) verificado contra o texto
+- [ ] Cada dimensao do checklist (references/dimensoes.md) coberta (respondida ou declarada em aberto)
+- [ ] Pelo menos uma pergunta gerada por lacuna identificada
 
 ### Etapa 7.5 — Diagrama de fluxo (opcional)
 

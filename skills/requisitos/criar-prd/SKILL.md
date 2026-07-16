@@ -90,7 +90,10 @@ Regras:
 - Maximo 2 perguntas relacionadas por mensagem
 - Questione premissas, aponte pontos fracos
 
-**Criterio de conclusao**: todas as 10 dimensoes cobertas (respondidas ou marcadas "A definir").
+**Criterio de conclusao:**
+- [ ] Cada uma das 10 dimensoes (references/question-order.md) tem pergunta ou foi respondida por inferencia
+- [ ] Cada pergunta nao respondida esta marcada como "A definir" com justificativa
+- [ ] Nenhuma pergunta de implementacao — so de experiencia do usuario (business focus)
 
 ### 6. Decisoes e ADRs
 
