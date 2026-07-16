@@ -76,6 +76,8 @@ Se sim: inclua tabela de metricas na secao 5. Se nao: secao 5 fica so com criter
 
 Mapeie secoes do PRD ja cobertas pelo input + pesquisa. Liste lacunas.
 
+Se o input contiver blocos Mermaid (\`\`\`mermaid), identifique o fluxo que cada um ilustra e anote em qual secao do PRD sera aproveitado.
+
 ### 5. Entrevista de Complemento
 
 Uma pergunta por vez. Siga a ordem em [`references/question-order.md`](references/question-order.md).
@@ -114,6 +116,8 @@ Gere, apresente, itere com feedback. Nao peca aprovacao previa — o usuario rev
 
 **PRD**: siga o template [`templates/prd-template.md`](templates/prd-template.md). Se metricas foram solicitadas, criterios sao numericos com baseline e fonte. Se nao, criterios sao tecnicos. A secao "Fora do escopo" e obrigatoria. Milestones: 3-6, independentes, com criterio de conclusao (condicao + verificacao + aprovador).
 
+**Diagramas**: se o input continha blocos Mermaid, replique-os nas secoes correspondentes do `_prd.md` — nao os descarte. Se a feature descreve um fluxo visualizavel que ainda nao tem diagrama, ofereca: "Essa feature tem um fluxo que pode ser visualizado. Quer que eu gere um fluxograma Mermaid? (s/n)". Se aceitar, invoque [`criar-mermaid`](../criar-mermaid/SKILL.md) e posicione o resultado junto ao topico relevante.
+
 **Criterio de conclusao**: arquivos gravados, usuario aprovou.
 
 ### 8. Revisao e Ajustes
@@ -132,6 +136,10 @@ Aplique alteracoes solicitadas. Repita ate aprovacao.
     ├── adr-001.md
     └── ...
 ```
+
+## Referências
+
+- [`criar-mermaid`](../criar-mermaid/SKILL.md) — fluxograma Mermaid.js a partir de requisitos.
 
 ## Regras
 

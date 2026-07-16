@@ -151,6 +151,16 @@ Mantenha o glossario atualizado.
 
 **Criterio de conclusao**: usuario confirma com "sim", "ok", "pode gerar".
 
+### Etapa 7.6 — Diagrama de fluxo (opcional)
+
+Se a demanda descreve um fluxo que pode ser explicado visualmente (processo, workflow, arvore de decisao, maquina de estados):
+
+> "Essa demanda tem um fluxo que pode ser visualizado com diagrama. Quer que eu gere um fluxograma Mermaid? (s/n)"
+
+Se o usuario aceitar, invoque a skill [`criar-mermaid`](../criar-mermaid/SKILL.md) com o contexto da demanda. Inclua o resultado como secao "Diagrama de Fluxo" no `_tecnico.md` e no `_solicitante.md`, posicionado junto ao topico que o diagrama ilustra (ex: se e fluxo de aprovacao, fica na secao de regras de negocio; se e fluxo de estados, na secao de comportamento do sistema). Nao apendar no final nem em secao generica. Se recusar, pule para Etapa 8.
+
+**Criterio de conclusao**: usuario aceitou ou recusou. Se aceitou, diagrama incluido.
+
 ### Etapa 8 — Geracao dos arquivos
 
 Pergunte o destino:
@@ -165,6 +175,10 @@ Gere dois arquivos:
 > "Arquivos gerados: `<caminhos>`. Contem: N perguntas, M alternativas, K premissas, L pendencias. Glossario com X termos. Quer revisar algum bloco?"
 
 **Criterio de conclusao**: arquivos gravados, usuario aprovou.
+
+## Referências
+
+- [`criar-mermaid`](../criar-mermaid/SKILL.md) — fluxograma Mermaid.js a partir de requisitos.
 
 ## Regras
 
