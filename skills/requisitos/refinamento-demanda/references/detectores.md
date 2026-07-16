@@ -1,1 +1,1 @@
-../refinamento-demanda-grill/references/detectores.md
+../../refinamento-demanda-grill/references/detectores.md

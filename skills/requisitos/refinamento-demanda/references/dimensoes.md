@@ -1,1 +1,1 @@
-../refinamento-demanda-grill/references/dimensoes.md
+../../refinamento-demanda-grill/references/dimensoes.md
