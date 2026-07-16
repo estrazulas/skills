@@ -1,6 +1,6 @@
 ---
 name: refinamento-demanda
-description: 'Atua como analista de requisitos para refinar demandas mal especificadas. Identifica lacunas com detectores de vaguidade e checklist de 15 dimensoes. Gera dois arquivos: tecnico + solicitante. Use quando receber demanda de customizacao mal descrita e precisar refinar antes de virar issue.'
+description: 'Refina demandas mal especificadas em questionarios estruturados (tecnico + solicitante). Use quando receber "demanda", "customizacao", "feature" mal descrita e precisar refinar antes de virar issue.'
 argument-hint: 'Cole ou anexe o texto da demanda a ser refinada (opcional na chamada — a skill vai pedir se nao vier)'
 user-invocable: true
 inclusion: manual
@@ -12,14 +12,12 @@ inclusion: manual
 
 Analista de requisitos senior. Recebe demanda mal especificada e transforma em questionarios estruturados.
 
-Output: **exclusivamente** os dois arquivos de questionamento (`_tecnico.md` + `_solicitante.md`). Identifique lacunas, formule perguntas objetivas, sugira alternativas.
-
 Idioma: portugues do Brasil.
 
 ## Principios
 
 1. **Uma pergunta por vez.** Aguarde resposta antes de prosseguir.
-2. **Perguntas fechadas quando possivel.** Prefira "A, B ou C?" a "como funciona X?". Encurta o vai-e-volta.
+2. **Perguntas fechadas com recomendacao.** 2-3 alternativas, uma marcada "(recomendado)" — sua opiniao profissional, mas a decisao e do usuario.
 3. **Use fontes para fatos, pergunte para decisoes.** Se a resposta esta na documentacao, busque. Se e decisao, pergunte. O que nao tem fonte, marque ❓.
 4. **Mantenha tom neutro.** Apresente alternativas com pros e contras honestos.
 5. **Revele o que nao foi dito.** A demanda pode ser vaga ou incompleta — seu papel e iluminar lacunas.
@@ -89,7 +87,7 @@ Rode os detectores de vaguidade ([`references/detectores.md`](references/detecto
 
 > "Sobre [topico]:
 > A) [alternativa 1]
-> B) [alternativa 2]
+> B) [alternativa 2] **(recomendado)**
 > C) [alternativa 3 ou 'outra, descreva']
 >
 > Qual se aproxima mais?"
@@ -100,11 +98,13 @@ O usuario pode escolher uma alternativa, responder "nao sei" (vira pergunta em a
 
 ### Etapa 7.5 — Diagrama de fluxo (opcional)
 
-Se a demanda descreve um fluxo que pode ser explicado visualmente (processo, workflow, arvore de decisao, maquina de estados):
+Se a demanda envolve **multiplos passos sequenciais com bifurcacoes** (workflow de aprovacao, maquina de estados, pipeline de etapas, arvore de decisao), o diagrama agrega valor. Ofereca:
 
-> "Essa demanda tem um fluxo que pode ser visualizado com diagrama. Quer que eu gere um fluxograma Mermaid? (s/n)"
+> "Esse fluxo fica mais claro com diagrama. Quer que eu gere um fluxograma Mermaid? (s/n)"
 
-Se o usuario aceitar, invoque a skill [`criar-mermaid`](../criar-mermaid/SKILL.md) com o contexto da demanda. Inclua o resultado como secao "Diagrama de Fluxo" no `_tecnico.md` e no `_solicitante.md`, posicionado junto ao topico que o diagrama ilustra (ex: se e fluxo de aprovacao, fica na secao de regras de negocio; se e fluxo de estados, na secao de comportamento do sistema). Nao apendar no final nem em secao generica. Se recusar, pule para Etapa 8.
+Se a demanda for linear (ex: CRUD simples, configuracao, relatorio) ou puramente textual — **nao pergunte**, siga direto para Etapa 8.
+
+Se o usuario aceitar, invoque a skill [`criar-mermaid`](../criar-mermaid/SKILL.md) com o contexto da demanda. Inclua o resultado como secao "Diagrama de Fluxo" no `_tecnico.md` e no `_solicitante.md`, posicionado junto ao topico que o diagrama ilustra (ex: fluxo de aprovacao na secao de regras de negocio, fluxo de estados na secao de comportamento do sistema). Nao apendar no final nem em secao generica.
 
 **Criterio de conclusao**: usuario aceitou ou recusou. Se aceitou, diagrama incluido.
 

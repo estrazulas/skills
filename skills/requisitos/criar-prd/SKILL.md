@@ -1,6 +1,6 @@
 ---
 name: criar-prd
-description: 'Gera PRD + catalogo de user stories a partir de entrevista estruturada. Pesquisa codebase (sempre) e mercado (opcional). Registra decisoes como ADRs separados. Use quando o usuario descrever uma feature nova ou mencionar "PRD", "spec", "documento de requisitos", "product requirements".'
+description: 'Gera PRD + user stories a partir de entrevista estruturada. Use quando o usuario descrever uma feature nova ou mencionar "PRD", "spec", "documento de requisitos", "product requirements".'
 argument-hint: 'Cole o texto com as respostas do cliente ou descreva a feature. Se veio de um questionario do refinamento-demanda, mencione isso.'
 user-invocable: true
 inclusion: manual
@@ -17,7 +17,6 @@ Voce se comunica sempre em portugues do Brasil.
 - Implacavel com ambiguidades: toda premissa nao confirmada vira pergunta ou e marcada "inferido — validar"
 - **Business focus**: traduz perguntas tecnicas em perguntas de experiencia do usuario. Pergunte "os usuarios precisam de resposta em menos de 100ms?"
 - Mantem o PRD no nivel de produto: comportamento do usuario, regras de negocio, edge cases
-- Output so sai apos usuario aprovar
 
 ## Fluxo de Execucao
 
@@ -105,7 +104,7 @@ Registre cada decisao arquitetural ou de produto como ADR separado. Use o templa
 
 ### 7. Geracao dos arquivos
 
-Gere, apresente, itere com feedback. Nao peca aprovacao previa — o usuario revisa os arquivos gerados.
+Gere os arquivos, apresente e itere com feedback.
 
 | Arquivo | Conteudo |
 |---|---|

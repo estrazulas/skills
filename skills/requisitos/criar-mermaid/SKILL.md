@@ -72,7 +72,7 @@ Se o contexto ja contiver uma analise de riscos mapeada, use-a diretamente. Se n
 
 ### 2. Geracao do codigo
 
-Produza o codigo Mermaid. Estrutura:
+Produza o codigo Mermaid:
 
 ```
 %%{init: {'theme': 'base'}}%%
@@ -80,29 +80,16 @@ graph TD
   A[texto] --> B{texto}
   B -->|Sim| C[texto]
   B -->|Nao| D[texto]
-  ...
-
-classDef error fill:#fee,color:#900,stroke:#c00
-classDef success fill:#efe,color:#060,stroke:#393
-classDef decision fill:#fff3cd,color:#630,stroke:#c90
-classDef action fill:#e8e8e8,color:#222,stroke:#666
-classDef loading fill:#eef,color:#036,stroke:#69c
-classDef empty fill:#f3e8ff,color:#5a0,stroke:#a3c
-classDef startend fill:#d4edda,color:#155724,stroke:#28a745
-
-class D,F error
-class C,E success
 ```
 
-Aplique as classes aos nos via `class N1,N2 nomeDaClasse`.
+Use os `classDef` da tabela de paleta acima. Aplique as classes aos nos via `class N1,N2 nomeDaClasse`.
 
 ### 3. Validacao de contraste
 
 Antes de entregar, verifique:
 
-- [ ] `%%{init: {'theme': 'base'}}%%` esta na primeira linha apos abertura do bloco
-- [ ] Todo `classDef` tem `fill` **E** `color` **E** `stroke`
-- [ ] Nenhum `classDef` usa `fill` com valor de cinza medio (`#888`–`#aaa`) sem `color` escuro
-- [ ] Todo no de decisao (`{}`) tem arestas de saida com rotulos
+- `%%{init: {'theme': 'base'}}%%` na primeira linha
+- Todo `classDef` tem `fill`, `color` e `stroke`
+- Todo no de decisao (`{}`) tem arestas de saida com rotulos
 
-**Criterio de conclusao**: os tres checkboxes acima marcados, e todo caminho (feliz + infeliz) da analise de riscos aparece no diagrama.
+**Criterio de conclusao**: todos os caminhos (feliz + infeliz) da analise de riscos aparecem no diagrama.
