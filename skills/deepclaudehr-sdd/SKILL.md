@@ -88,6 +88,7 @@ cd <workdir> && deepclaudehr-ask pro -p --verbose \
   --output-format stream-json \
   --input-format stream-json \
   --brief \
+  --append-system-prompt "Faça no máximo 2 perguntas por vez. Aguarde a resposta do usuário antes de fazer a próxima pergunta. Numere as perguntas para facilitar a resposta." \
   "/opsx:propose adicionar sistema de autenticação com JWT"
 ```
 

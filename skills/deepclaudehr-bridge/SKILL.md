@@ -55,6 +55,7 @@ cd <workdir> && deepclaudehr pro -p --verbose \
   --input-format stream-json \
   --brief \
   --permission-mode auto \
+  --append-system-prompt "Faça no máximo 2 perguntas por vez. Aguarde a resposta antes de continuar. Numere as perguntas." \
   "<prompt>"
 ```
 
