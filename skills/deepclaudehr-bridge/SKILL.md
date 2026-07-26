@@ -39,7 +39,7 @@ O Hermes pergunta ao usuário qual modelo usar se não estiver claro. O padrão 
 - Extrair o prompt de código da mensagem do usuário
 - Se o usuário mencionar "pro" → `deepclaudehr pro`; se mencionar "barato"/"simples"/"flash" → `deepclaudehr`
 - Se não especificar, perguntar: "Uso deepclaudehr pro (modelo top) ou normal (mais barato)?"
-- Para projeto novo: `mkdir -p /tmp/claude-bridge/<slug>` e usar como workdir
+- Para projeto novo: **perguntar o nome do projeto** ao usuário, depois `mkdir -p ~/git/<nome>` e inicializar com `git init`
 - Para projeto existente: usar o diretório informado pelo usuário
 - Informar o caminho ao usuário antes de começar
 
