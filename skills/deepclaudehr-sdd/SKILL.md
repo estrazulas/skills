@@ -26,13 +26,13 @@ Extensão da skill `deepclaudehr-bridge`. Tudo que não está escrito aqui segue
 | Fase 3 | Implementação direta | **Apply**: Claude implementa conforme spec aprovada |
 | Fase 4 | — | **Archive**: Claude arquiva a spec concluída |
 | Perguntas | Durante implementação | Principalmente na fase Propose (definição de escopo) |
-| Permissão | `--permission-mode auto` | **Explore/Propose**: `deepclaudehr-ask` (acceptEdits) · **Apply/Archive**: `deepclaudehr` (bypassPermissions) |
+| Permissão | `--permission-mode auto` | **Explore/Propose**: `deepclaudehr-ask` (auto) · **Apply/Archive**: `deepclaudehr` (bypassPermissions) |
 
 ## Pré-requisitos
 
 Além dos pré-requisitos da skill base:
 - Skills OpenSpec carregadas (`openspec-explore`, `openspec-propose`, `openspec-apply-change`, `openspec-archive-change`)
-- `deepclaudehr-ask` instalado em `/usr/local/bin/deepclaudehr-ask` (wrapper que força `acceptEdits`)
+- `deepclaudehr-ask` instalado em `/usr/local/bin/deepclaudehr-ask` (wrapper que força `auto`)
 - Projeto existente com codebase para o Explore analisar (se for projeto novo, pular Explore)
 
 ## Passos (delta sobre a base)
@@ -76,8 +76,8 @@ Antes de spawnar, informar:
 
 | Fase | Wrapper | Permissão | Por quê |
 |------|---------|-----------|---------|
-| Explore | `deepclaudehr-ask pro` | acceptEdits | Precisa perguntar sobre escopo da análise |
-| Propose | `deepclaudehr-ask pro` | acceptEdits | Precisa perguntar requisitos, campos, decisões |
+| Explore | `deepclaudehr-ask pro` | auto | Aprova leituras/escritas de spec, mas pergunta decisões |
+| Propose | `deepclaudehr-ask pro` | auto | Escreve arquivos de spec sem interromper, pergunta requisitos |
 | Apply | `deepclaudehr pro` | bypassPermissions | Implementação direta, sem interrupções |
 | Archive | `deepclaudehr pro` | bypassPermissions | Operação mecânica, sem decisões |
 
@@ -93,7 +93,7 @@ cd <workdir> && deepclaudehr-ask pro -p --verbose \
 
 **SDD sempre usa modelo `pro`** — especificação de requisitos exige o melhor modelo. Não perguntar qual modelo; usar pro direto.
 
-**Nota**: `deepclaudehr-ask` já injeta `--permission-mode acceptEdits` internamente, não é necessário passar na linha de comando.
+**Nota**: `deepclaudehr-ask` já injeta `--permission-mode auto` internamente, não é necessário passar na linha de comando.
 
 ### 4. Fase Explore (se aplicável)
 
@@ -141,7 +141,7 @@ Mesmas restrições da skill base, reforçadas:
 
 ## Pitfalls (adicionais à base)
 
-- **`bypassPermissions` global**: o `~/.claude/settings.json` tem `defaultMode: bypassPermissions`. Se usar `deepclaudehr` (sem `-ask`) nas fases Explore/Propose, o Claude NUNCA pergunta — as perguntas de escopo serão puladas. SEMPRE usar `deepclaudehr-ask` para Explore e Propose.
+- **`bypassPermissions` global**: o `~/.claude/settings.json` tem `defaultMode: bypassPermissions`. Se usar `deepclaudehr` (sem `-ask`) nas fases Explore/Propose, o Claude NUNCA pergunta. SEMPRE usar `deepclaudehr-ask` (modo `auto`) para Explore e Propose.
 - **Propose sem Explore em projeto novo**: se o usuário nunca rodou Explore no projeto, o Claude Code pode não ter contexto suficiente. Sugerir Explore primeiro se o projeto for grande ou desconhecido.
 - **Spec muito vaga**: se o usuário responder com respostas curtas ("sim", "ok", "tanto faz"), o Claude Code pode gerar uma spec incompleta. O Hermes deve incentivar respostas detalhadas na fase Propose.
 - **Pular Archive**: após Apply, lembrar o usuário de rodar Archive para manter o histórico de specs limpo.
