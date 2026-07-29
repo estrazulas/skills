@@ -32,10 +32,10 @@ python3 scripts/md-to-pdf.py [input.md] [output.pdf]
 
 ```bash
 # Usando defaults
-python3 ~/git/skills/skills/midia/md-to-pdf/scripts/md-to-pdf.py
+python3 skills/midia/md-to-pdf/scripts/md-to-pdf.py
 
 # Especificando arquivos
-python3 ~/git/skills/skills/midia/md-to-pdf/scripts/md-to-pdf.py ~/Desktop/conteudoestudos/meu-arquivo.md meu-output.pdf
+python3 skills/midia/md-to-pdf/scripts/md-to-pdf.py ~/Desktop/conteudoestudos/meu-arquivo.md meu-output.pdf
 ```
 
 ## Como funciona

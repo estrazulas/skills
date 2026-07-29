@@ -21,5 +21,5 @@ A chave `DEEPSEEK_API_KEY` deve estar disponível como variável de ambiente (ex
 O script `deepseek-saldo.sh` faz a consulta. Leia a chave apenas de `$DEEPSEEK_API_KEY` — **nunca** hardcode.
 
 ```bash
-bash ~/git/skills/skills/util/deepseek-saldo/deepseek-saldo.sh
+bash skills/util/deepseek-saldo/deepseek-saldo.sh
 ```
