@@ -31,13 +31,18 @@ Cada agente tem seu próprio mecanismo de descoberta de skills. Consulte a docum
 - **headroom-clean-e2e** — limpa usuários, chaves e times criados pelos testes e2e/admin do HeadroomGate
 - **headroom-doctor** — diagnostica problemas no proxy Headroom: containers, portas, logs, endpoints
 - **humanizer-pt-br** — remove traços de escrita gerada por IA de textos em português brasileiro, tornando-os mais naturais
+- **mattpocock** — coleção de 30 skills de Matt Pocock (code review, TDD, domain modeling, etc.)
 - **md-to-pdf** — converte markdown para PDF preservando hyperlinks (usa Chrome headless)
-- **mem** — lista e busca nas memórias persistentes do projeto
-- **refinamento-demanda** — analista de requisitos que refina demandas mal especificadas antes de virarem issue/spec
 - **resumo-tarefas** — gera resumo diário das tarefas criadas ou modificadas nos últimos 2 dias
-- **supabase** — guia de desenvolvimento Supabase: changelog, verificação, API, error recovery
-- **supabase-postgres-best-practices** — otimização de queries Postgres: índices, pooling, RLS, schema design
+- **security-review** — revisão de segurança de código para vulnerabilidades (OWASP, XSS, injection, auth, etc.)
 - **tarefa** — salva e arquiva tarefas como `.md` numa pasta configurável
+
+## Skills de Requisitos (requisitos/)
+
+- **criar-mermaid** — gera fluxograma Mermaid.js a partir de especificação de requisitos
+- **criar-prd** — gera PRD + user stories a partir de entrevista estruturada
+- **refinamento-demanda** — refina demandas mal especificadas em questionários estruturados
+- **refinamento-demanda-grill** — refinamento intensivo com questionamento profundo (modo sabatina)
 
 ## Skills IFSC (ifsc_util/)
 
