@@ -32,8 +32,8 @@ O cron job usa `no_agent=True`, entao o stdout do script e entregue verbatim —
 
 ## Links simbolicos
 
-- `~/.hermes/skills/resumo-tarefas` -> `/home/estrazulas/git/skills/skills/resumo-tarefas/`
-- `~/.hermes/scripts/resumo-tarefas.py` -> `/home/estrazulas/git/skills/skills/resumo-tarefas/scripts/resumo-tarefas.py`
+- `~/.hermes/skills/resumo-tarefas` -> `/home/estrazulas/git/skills/skills/produtividade/resumo-tarefas/`
+- `~/.hermes/scripts/resumo-tarefas.py` -> `/home/estrazulas/git/skills/skills/produtividade/resumo-tarefas/scripts/resumo-tarefas.py`
 
 ## Cron job associado
 

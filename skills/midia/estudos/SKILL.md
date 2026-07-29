@@ -125,7 +125,7 @@ flowchart TD
 4. Confirm every diagram has ≤7 nodes (hard limit)
 5. Confirm ALL node IDs are unique across all diagrams — use a 2-char prefix per diagram
 6. Confirm `&nbsp;` separator is present between closing ` ``` ` and next `###` heading
-7. Run `python3 ~/.hermes/skills/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports
+7. Run `python3 ~/git/skills/skills/midia/estudos/scripts/verify-mermaid.py <output-path>` to auto-verify — fix any violations it reports
 8. If any violation found, FIX IT in the content before writing the file
 
 4. **Show and confirm before saving** — present the full mind map content (including the YouTube link at the top) to the user and explain what will happen:

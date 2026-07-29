@@ -110,7 +110,7 @@ DISCORD_DEFAULT_CHANNEL="ID_DO_CANAL"
 ## Estrutura de arquivos
 
 ```
-~/git/skills/skills/discord_reader/
+~/git/skills/skills/comunicacao/discord_reader/
 ├── SKILL.md              # Esta skill
 ├── discord-reader.py     # Script principal
 ├── .env                  # Token e config (GITIGNORED)
