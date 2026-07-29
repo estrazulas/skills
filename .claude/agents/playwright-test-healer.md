@@ -1,1 +1,0 @@
-../../agents/playwright-test-healer.md

@@ -18,33 +18,45 @@ Cada agente tem seu próprio mecanismo de descoberta de skills. Consulte a docum
 
 ## Skills
 
+### Texto
 - **casual-chat** — reescreve ou traduz texto para inglês informal de grupo dev (Discord/Telegram), removendo padrões de IA
+- **humanizer-pt-br** — remove traços de escrita gerada por IA de textos em português brasileiro, tornando-os mais naturais
+
+### Dev
 - **caveman-commit** — gera mensagens de commit ultra-compactas no formato Conventional Commits
-- **deepseek-saldo** — consulta o saldo disponível na conta DeepSeek via API
 - **developer** — agente de desenvolvimento Node.js/TypeScript com TDD, SOLID e dependency injection
-- **discord_reader** — lê as últimas mensagens de um canal do Discord e opcionalmente gera resumo com IA
+- **security-review** — revisão de segurança de código para vulnerabilidades (OWASP, XSS, injection, auth, etc.)
+
+### Mídia
 - **estudos** — processa vídeos do YouTube e gera mapas mentais em markdown + Mermaid
 - **ffmpeg** — processamento de vídeo/áudio: conversão, compressão, resize, extração de áudio
-- **find-skills** — busca e instala skills do ecossistema skills.sh
-- **fix-network** — diagnostica e corrige rede de VM VirtualBox após save/restore
+- **md-to-pdf** — converte markdown para PDF preservando hyperlinks (usa Chrome headless)
+
+### Headroom
 - **headroom-auth** — gerencia o sistema de auth do HeadroomGate: times, usuários, chaves API, roles
 - **headroom-clean-e2e** — limpa usuários, chaves e times criados pelos testes e2e/admin do HeadroomGate
 - **headroom-doctor** — diagnostica problemas no proxy Headroom: containers, portas, logs, endpoints
-- **humanizer-pt-br** — remove traços de escrita gerada por IA de textos em português brasileiro, tornando-os mais naturais
-- **mattpocock** — coleção de 30 skills de Matt Pocock (code review, TDD, domain modeling, etc.)
-- **md-to-pdf** — converte markdown para PDF preservando hyperlinks (usa Chrome headless)
+
+### Produtividade
 - **resumo-tarefas** — gera resumo diário das tarefas criadas ou modificadas nos últimos 2 dias
-- **security-review** — revisão de segurança de código para vulnerabilidades (OWASP, XSS, injection, auth, etc.)
 - **tarefa** — salva e arquiva tarefas como `.md` numa pasta configurável
 
-## Skills de Requisitos (requisitos/)
+### Util
+- **deepseek-saldo** — consulta o saldo disponível na conta DeepSeek via API
+- **discord_reader** — lê as últimas mensagens de um canal do Discord e opcionalmente gera resumo com IA
+- **find-skills** — busca e instala skills do ecossistema skills.sh
+- **fix-network** — diagnostica e corrige rede de VM VirtualBox após save/restore
 
+### Requisitos (requisitos/)
 - **criar-mermaid** — gera fluxograma Mermaid.js a partir de especificação de requisitos
 - **criar-prd** — gera PRD + user stories a partir de entrevista estruturada
 - **refinamento-demanda** — refina demandas mal especificadas em questionários estruturados
 - **refinamento-demanda-grill** — refinamento intensivo com questionamento profundo (modo sabatina)
 
-## Skills IFSC (ifsc_util/)
+### Coleção Externa
+- **mattpocock** — coleção de 30 skills de Matt Pocock (code review, TDD, domain modeling, etc.)
+
+### IFSC (ifsc_util/)
 
 Sub-skills utilitárias para o contexto institucional IFSC:
 

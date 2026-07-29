@@ -1,1 +1,0 @@
-../../agents/playwright-test-generator.md
