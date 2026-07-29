@@ -7,6 +7,7 @@ skills/
 ├── texto/          # Processamento de texto
 ├── dev/            # Desenvolvimento e segurança
 ├── midia/          # Processamento de mídia e documentos
+├── comunicacao/    # Comunicação e integração (Discord, etc)
 ├── headroom/       # Skills do projeto Headroom
 ├── produtividade/  # Gestão de tarefas
 ├── util/           # Utilitários diversos

@@ -7,6 +7,10 @@ node_modules/
 
 # Skill local config (machine-specific paths)
 skills/*/.config
+skills/*/.env
+skills/*/.favorite_channels
+skills/*/*/.env
+skills/*/*/.favorite_channels
 
 # IDE
 .vscode/
