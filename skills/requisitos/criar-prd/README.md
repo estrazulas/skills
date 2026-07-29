@@ -2,7 +2,7 @@
 
 Gera PRDs (Product Requirements Documents) prontos pra implementacao. Voce descreve uma feature, a skill entrevista voce, pesquisa o que ja existe no codigo, e entrega um PRD completo + catalogo de user stories + ADRs.
 
-> Melhorias desenvolvidas em conjunto com conceitos da skill `cy-create-prd` do framework Compozy (pesquisa de codebase, business focus, ADRs separados, user-story catalog, update mode).
+> Melhorias desenvolvidas em conjunto com conceitos da skill `cy-create-prd` (pesquisa de codebase, business focus, ADRs separados, user-story catalog, update mode).
 
 ## Quando usar
 
@@ -95,7 +95,7 @@ adrs/
 ### Etapa 7 — Arquivos
 
 ```
-.compozy/tasks/notificacoes-push/
+tasks/notificacoes-push/
 ├── _prd.md              ← PRD completo, 9 secoes
 ├── _user_stories.md     ← Catalogo de US com edge cases
 └── adrs/
@@ -130,13 +130,3 @@ Usuario: `Ajusta o milestone 3 — inclui teste A/B antes de liberar pra 100%.`
 - **Catalogo de user stories** — cada US com rules, edge cases e notas de implementacao
 - **Milestones com criterio de conclusao** — 3-6 fases, cada uma com condicao + verificacao + aprovador
 - **Update mode** — se o PRD ja existe, atualiza preservando secoes nao alteradas
-
-## Instalacao
-
-```bash
-# Hermes (ja instalada)
-/hermes/skills/criar-prd/
-
-# Claude Code
-ln -s ~/git/skills/skills/criar-prd ~/.claude/skills/criar-prd
-```

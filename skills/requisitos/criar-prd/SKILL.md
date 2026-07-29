@@ -131,7 +131,7 @@ Aplique alteracoes solicitadas. Repita ate aprovacao.
 ## Estrutura de diretorios
 
 ```
-.compozy/tasks/<slug>/
+tasks/<slug>/
 ├── _prd.md
 ├── _user_stories.md
 └── adrs/

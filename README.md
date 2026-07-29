@@ -1,6 +1,20 @@
 # Skills
 
-Skills pessoais para Claude Code e Hermes. Cada skill é uma pasta com `SKILL.md` dentro de `skills/`.
+Skills pessoais para agentes de IA. Cada skill é uma pasta com `SKILL.md` dentro de `skills/`.
+
+## Instalação
+
+Copie a pasta da skill desejada para o diretório de skills do seu agente:
+
+```bash
+# Exemplo para Claude Code
+cp -r skills/<nome-da-skill> ~/.claude/skills/
+
+# Exemplo para outros agentes
+cp -r skills/<nome-da-skill> <diretorio-de-skills-do-agente>/
+```
+
+Cada agente tem seu próprio mecanismo de descoberta de skills. Consulte a documentação do agente que você está usando.
 
 ## Skills
 
