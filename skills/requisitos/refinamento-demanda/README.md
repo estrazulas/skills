@@ -232,7 +232,8 @@ graph TD
   A(Demanda vaga) --> B[refinamento-demanda]
   B --> C[/Questionário técnico + solicitante/]
   C --> D{Pendências fechadas<br/>pelo PO?}
-  D -->|Não| E[Pendência vira premissa inventada<br/>lá na frente]
+  D -->|Não| E[Pendência vira questionamento ao PO]
+  E --> D
   D -->|Sim| F[criar-prd]
   F --> G[/PRD + user stories + ADRs/]
   G --> H{Como levar para execução?}
@@ -243,16 +244,14 @@ graph TD
   K --> M(Implementação manual)
   L --> N(Implementação agêntica)
 
-  classDef error fill:#fee,color:#900,stroke:#c00
   classDef success fill:#efe,color:#060,stroke:#393
   classDef decision fill:#fff3cd,color:#630,stroke:#c90
   classDef action fill:#e8e8e8,color:#222,stroke:#666
   classDef startend fill:#d4edda,color:#155724,stroke:#28a745
 
-  class E error
   class G,K,L success
   class D,H decision
-  class B,C,F,I,J action
+  class B,C,E,F,I,J action
   class A,M,N startend
 ```
 
