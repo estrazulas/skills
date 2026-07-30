@@ -236,10 +236,12 @@ graph TD
   D -->|Sim| F[criar-prd]
   F --> G[/PRD + user stories + ADRs/]
   G --> H{Como levar para execução?}
-  H -->|Issues| I[Skill de issues da instituição<br/>ou criação manual]
+  H -->|Issues| I[issue-format]
   H -->|Spec-driven| J[[Kiro specs ou OpenSpec]]
-  I --> K(Backlog rastreável até a demanda)
-  J --> L(requirements → design → tasks)
+  I --> K[/Backlog rastreável até a demanda/]
+  J --> L[/requirements → design → tasks/]
+  K --> M(Implementação manual)
+  L --> N(Implementação agêntica)
 
   classDef error fill:#fee,color:#900,stroke:#c00
   classDef success fill:#efe,color:#060,stroke:#393
@@ -248,13 +250,15 @@ graph TD
   classDef startend fill:#d4edda,color:#155724,stroke:#28a745
 
   class E error
-  class G success
+  class G,K,L success
   class D,H decision
   class B,C,F,I,J action
-  class A,K,L startend
+  class A,M,N startend
 ```
 
-Os dois caminhos partem do mesmo material. Com **issues**, a skill institucional de criação de issues consome o PRD e o catálogo de user stories — ela ainda não está publicada aqui, e até chegar o caminho é criar as issues à mão a partir dos mesmos arquivos. O PRD já traz a estrutura de issues proposta com ordem, dependência e complexidade, e cada user story vira uma issue com acceptance criteria e edge cases prontos no corpo.
+Os dois caminhos partem do mesmo material e terminam em modos de implementação diferentes: a issue é escrita para um desenvolvedor implementar à mão, a spec é escrita para um agente implementar a partir das tasks.
+
+Com **issues**, a [`issue-format`](../issue-format/SKILL.md) entrevista você e escreve cada uma no padrão do projeto. Ela funciona sem nada disso, mas o PRD entra como material de apoio e encurta a entrevista: a estrutura de issues proposta já traz ordem, dependência e complexidade, e cada user story já vem com acceptance criteria e edge cases.
 
 Com **spec-driven**, o PRD alimenta a fase de requisitos direto. O ganho de chegar lá com esse material pronto está em onde a ambiguidade se paga.
 
