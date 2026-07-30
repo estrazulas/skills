@@ -1,132 +1,198 @@
 # criar-prd
 
-Gera PRDs (Product Requirements Documents) prontos pra implementacao. Voce descreve uma feature, a skill entrevista voce, pesquisa o que ja existe no codigo, e entrega um PRD completo + catalogo de user stories + ADRs.
-
-> Melhorias desenvolvidas em conjunto com conceitos da skill `cy-create-prd` (pesquisa de codebase, business focus, ADRs separados, user-story catalog, update mode).
-
-## Quando usar
-
-Voce tem uma ideia de feature e precisa de uma spec que qualquer dev (ou IA) consiga implementar sem perguntar mais nada. Exemplos:
-
-- "Preciso de um sistema de notificacoes push no app"
-- "Vamos adicionar exportacao de relatorios em PDF"
-- "O cliente quer um portal do professor com lancamento de notas"
-
-A skill e para **criar a spec** — se voce ainda esta na fase de descobrir o que perguntar, use antes uma skill de refinamento de demanda.
-
-## Como usar
+Gera PRDs prontos para implementação. Você descreve uma feature, a skill entrevista você, varre o código que já existe, e entrega o PRD com catálogo de user stories e ADRs.
 
 ```
 /criar-prd
 ```
 
-A skill conduz 8 etapas. Voce so responde — uma pergunta por vez.
+> Melhorias desenvolvidas em conjunto com conceitos da skill `cy-create-prd`: pesquisa de codebase, business focus, ADRs separados, catálogo de user stories, update mode.
 
-## Exemplo de sessao
+## Quando usar
 
-### Entrada
+Você tem uma ideia de feature e precisa de uma spec que qualquer dev — ou qualquer agente — consiga implementar sem voltar a perguntar. Serve para pedidos como "preciso de notificações push no app" ou "o cliente quer um portal do professor com lançamento de notas".
 
-> "Preciso de notificacoes push no app. Usuario recebe alerta quando tem nova mensagem, nova curtida e quando alguem menciona ele."
+A skill cria a spec. Se você ainda está descobrindo o que perguntar, o passo anterior é o [`refinamento-demanda`](../refinamento-demanda/SKILL.md).
 
-### Etapa 0 — Detecta update mode
-
-> (Nao existe PRD anterior → novo PRD)
-
-### Etapa 1 — Um PRD ou varios?
-
-> "Isso me parece uma feature so: notificacoes push. PRD unico."
-
-### Etapa 2a — Codebase
-
-A skill varre o codigo e traz:
-
-> "Encontrei:
-> - `NotificationService` com suporte a email — push precisa ser adicionado
-> - Firebase Cloud Messaging configurado no Android
-> - `user_preferences` ja tem `notifications_enabled`
-> - WebSocket do chat pode ser reutilizado como fallback"
-
-### Etapa 2b — Mercado (opcional)
-
-> "Quer que eu pesquise o mercado? (s/n)"
-
-Usuario: `s`
-
-> "Pesquisei:
-> - Usuarios esperam notificacao em < 30s
-> - Concorrentes agrupam eventos similares ('Joao e mais 3 curtiram')
-> - Reclamacao comum: clicou na notificacao e nao abriu nada — deeplink e essencial"
-
-### Etapa 3 — Metricas (opcional)
-
-> "Quer incluir criterios numericos (baseline, meta, prazo)? (s/n)"
-
-Usuario: `s`
-
-### Etapa 5 — Entrevista
-
-> "Sobre o timing: usuarios precisam de resposta em menos de 30 segundos ou 2 minutos e aceitavel?"
-
-Usuario: `< 30s para mensagens, < 2min para curtidas.`
-
-> "Otimo. Quando varios eventos chegam em sequencia (5 curtidas na mesma foto):
-> A) Uma notificacao por evento
-> B) Agregar: 'Joao e mais 4 curtiram' **(recomendado — reduz spam)**
-> C) Usuario escolhe nas preferencias
->
-> Qual?"
-
-Usuario: `B.`
-
-> "B: agregado. Isso implica que nao precisamos de configuracao granular por tipo de evento. Simplifica as preferencias."
-
-...continua cobrindo contexto, problema, solucao, funcionalidades, decisoes, escopo negativo, criterios, milestones, riscos, referencias.
-
-### Etapa 6 — ADRs
-
-A skill registra decisoes como arquivos separados:
+## Fluxo
 
 ```
-adrs/
-├── adr-001.md  ← Agregacao de notificacoes por entidade
-└── adr-002.md  ← Firebase + WebSocket como fallback
+   ┌──────────────────────────────────────────────────────────┐
+   │  0. Detecta modo        → novo PRD ou update             │
+   │  1. Análise de escopo   → um PRD ou vários?              │
+   └──────────────────────────┬───────────────────────────────┘
+                              │
+   ┌──────────────────────────▼───────────────────────────────┐
+   │  2a. Codebase           → sempre, se o repo for visível  │
+   │  2b. Mercado            → só com autorização             │
+   │  2c. Apresenta achados  → antes de qualquer pergunta     │
+   └──────────────────────────┬───────────────────────────────┘
+                              │
+   ┌──────────────────────────▼───────────────────────────────┐
+   │  3. Métricas (opcional)                                  │
+   │  4. Análise inicial     → mapeia lacunas                 │
+   │  5. Entrevista          → 10 dimensões, uma por vez      │
+   │  6. ADRs                → uma decisão por arquivo        │
+   └──────────────────────────┬───────────────────────────────┘
+                              │
+   ┌──────────────────────────▼───────────────────────────────┐
+   │  7. Geração                                              │
+   │  8. Revisão             → itera até aprovação            │
+   └──────────────────────────────────────────────────────────┘
 ```
 
-### Etapa 7 — Arquivos
+A ordem das perguntas da entrevista está em [`references/question-order.md`](references/question-order.md): contexto, problema, solução, funcionalidades, decisões, escopo negativo, critérios de aceite, milestones, riscos e referências.
+
+## Cenário 1 — feature única
+
+Notificações push num app que já tem serviço de e-mail.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-prd                                                 │
+│                                                              │
+│   Preciso de notificações push no app. O usuário recebe      │
+│   alerta quando tem nova mensagem, nova curtida e quando     │
+│   alguém menciona ele.                                       │
+├──────────────────────────────────────────────────────────────┤
+│ agente                          ◄── varredura de codebase    │
+│   Antes das perguntas, o que encontrei:                      │
+│                                                              │
+│   • NotificationService já existe, com suporte a e-mail      │
+│   • Firebase Cloud Messaging configurado no Android          │
+│   • user_preferences já tem notifications_enabled            │
+│   • o WebSocket do chat pode servir de fallback              │
+│                                                              │
+│   Com base nisso, vou focar no que diferencia sua feature.   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+A varredura vem antes da entrevista de propósito: perguntar "vocês já têm serviço de notificação?" quando a resposta está no repositório queima a paciência de quem responde.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ agente                          ◄── business focus           │
+│   Quando vários eventos chegam em sequência, cinco curtidas  │
+│   na mesma foto:                                             │
+│   A) uma notificação por evento                              │
+│   B) agregar em "João e mais 4 curtiram"  (recomendado)      │
+│   C) o usuário escolhe nas preferências                      │
+├──────────────────────────────────────────────────────────────┤
+│ você                                                         │
+│   B                                                          │
+├──────────────────────────────────────────────────────────────┤
+│ agente                                                       │
+│   B, agregado. Isso implica que não precisamos de            │
+│   configuração granular por tipo de evento, o que simplifica │
+│   a tela de preferências. Registro como ADR.                 │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Repare no formato da pergunta: nada sobre fila, worker ou payload. A skill traduz decisão de implementação em decisão de experiência, e a arquitetura decorre disso.
+
+No fim, os arquivos:
 
 ```
 tasks/notificacoes-push/
-├── _prd.md              ← PRD completo, 9 secoes
-├── _user_stories.md     ← Catalogo de US com edge cases
+├── _prd.md              → 9 seções, 5 user stories, 4 milestones
+├── _user_stories.md     → cada US com rules e edge cases
 └── adrs/
-    ├── adr-001.md
-    └── adr-002.md
+    ├── adr-001.md       → agregação de notificações por entidade
+    └── adr-002.md       → Firebase com WebSocket como fallback
 ```
 
-### Etapa 8 — Revisao
+## Cenário 2 — mais de uma feature, e um PRD que já existe
 
-> "Arquivos gerados. PRD com 5 user stories, 4 milestones, 2 ADRs. Quer revisar?"
+Aqui aparecem os dois desvios do fluxo: a divisão de escopo e o update mode.
 
-Usuario: `Ajusta o milestone 3 — inclui teste A/B antes de liberar pra 100%.`
+```
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-prd                                                 │
+│                                                              │
+│   Portal do professor: lançamento de notas, registro de      │
+│   frequência e emissão de relatórios para a coordenação.     │
+├──────────────────────────────────────────────────────────────┤
+│ agente                          ◄── análise de escopo        │
+│   Isso me parece mais de uma feature independente. Sugiro    │
+│   dividir em:                                                │
+│                                                              │
+│   • PRD 1: lançamento de notas — entrega e testa sozinho     │
+│   • PRD 2: registro de frequência — modelo de dados próprio  │
+│   • PRD 3: relatórios da coordenação — outra persona         │
+│                                                              │
+│   Faço um PRD por vez. Qual quer que eu comece?              │
+├──────────────────────────────────────────────────────────────┤
+│ você                                                         │
+│   começa pelo 1                                              │
+└──────────────────────────────────────────────────────────────┘
+```
 
-> "Ajustado."
+O critério de divisão não é tamanho: é entregar e testar em separado, afetar módulos diferentes, atender personas distintas, ou passar de seis ou sete user stories.
+
+Semanas depois, a coordenação pede que o professor possa reabrir uma nota já lançada:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-prd                                                 │
+│                                                              │
+│   No lançamento de notas, o professor precisa poder reabrir  │
+│   uma nota já fechada, com justificativa.                    │
+├──────────────────────────────────────────────────────────────┤
+│ agente                          ◄── update mode              │
+│   Encontrei um PRD existente em tasks/lancamento-notas/.     │
+│   Quer atualizá-lo ou criar um novo?                         │
+├──────────────────────────────────────────────────────────────┤
+│ você                                                         │
+│   atualiza                                                   │
+├──────────────────────────────────────────────────────────────┤
+│ agente                                                       │
+│   Vou preservar as seções não afetadas e espelhar a mudança  │
+│   no _user_stories.md. A US-04 ganha um edge case novo:      │
+│   reabertura depois do fechamento do período letivo.         │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Sem o update mode, o caminho comum é gerar um segundo PRD e deixar dois documentos concorrentes descrevendo a mesma feature.
 
 ## O que ela gera
 
-| Arquivo | Para quem | Conteudo |
+| Arquivo | Para quem | Conteúdo |
 |---|---|---|
-| `_prd.md` | Tech lead, dev, IA | PRD completo: contexto, user stories, edge cases, milestones, riscos, ADRs |
-| `_user_stories.md` | Dev, IA | Catalogo de historias com acceptance criteria e edge cases varridos |
-| `adrs/adr-NNN.md` | Time, futuro | Decisoes arquiteturais registradas, referenciveis por outros PRDs |
+| `_prd.md` | tech lead, dev, agente | contexto, user stories, edge cases, escopo negativo, milestones, riscos |
+| `_user_stories.md` | dev, agente | catálogo com acceptance criteria e edge cases varridos |
+| `adrs/adr-NNN.md` | time, e o time do ano que vem | decisões arquiteturais registradas, referenciáveis por outros PRDs |
 
-## Principais funcionalidades
+Os milestones são de 3 a 6, independentes, e cada um carrega condição de conclusão, forma de verificação e quem aprova. Métricas são opcionais: se você pedir, os critérios de aceite saem numéricos com baseline e fonte; se não, ficam técnicos.
 
-- **Analisa escopo primeiro** — decide se e um PRD ou varios, um por vez ate aprovacao
-- **Pesquisa codebase** — varre o que ja existe antes de perguntar (nunca pergunta o obvio)
-- **Pesquisa mercado** — opcional, busca tendencias e concorrentes pra enriquecer as perguntas
-- **Business focus** — toda pergunta e sobre experiencia do usuario, nao sobre implementacao
-- **Metricas opcionais** — se quiser, criterios de aceite sao numericos (baseline, meta, prazo, responsavel)
-- **ADRs em arquivos separados** — decisoes registradas como documentos independentes
-- **Catalogo de user stories** — cada US com rules, edge cases e notas de implementacao
-- **Milestones com criterio de conclusao** — 3-6 fases, cada uma com condicao + verificacao + aprovador
-- **Update mode** — se o PRD ja existe, atualiza preservando secoes nao alteradas
+## Onde entra na cadeia
+
+```mermaid
+%%{init: {'theme': 'base'}}%%
+graph TD
+  A(Demanda vaga) --> B[refinamento-demanda]
+  B --> C[/Questionário sem pendências/]
+  C --> D[criar-prd]
+  D --> E{Fluxo com bifurcações?}
+  E -->|Sim| F[criar-mermaid]
+  E -->|Não| G[/PRD + user stories + ADRs/]
+  F --> G
+  G --> H[[Framework spec-driven]]
+  H --> I(requirements → design → tasks)
+
+  classDef success fill:#efe,color:#060,stroke:#393
+  classDef decision fill:#fff3cd,color:#630,stroke:#c90
+  classDef action fill:#e8e8e8,color:#222,stroke:#666
+  classDef startend fill:#d4edda,color:#155724,stroke:#28a745
+
+  class G success
+  class E decision
+  class B,C,D,F,H action
+  class A,I startend
+```
+
+A skill aproveita blocos Mermaid que vierem no input em vez de descartá-los, e oferece gerar um quando a feature descreve fluxo visualizável. O diagrama vai para a seção do PRD que ele ilustra.
+
+Veja o fluxo completo em [`SKILL.md`](SKILL.md).

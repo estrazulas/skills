@@ -1,40 +1,48 @@
-# Criar Mermaid — Fluxograma de Requisitos
+# criar-mermaid
 
-Skill que traduz especificações de requisitos de software em fluxogramas Mermaid.js com cobertura completa de caminhos felizes e infelizes.
-
-## Uso rápido
+Traduz especificação de requisitos em fluxograma Mermaid.js, cobrindo o caminho feliz e todos os caminhos de erro.
 
 ```
 /criar-mermaid <especificação do fluxo>
 ```
 
-Exemplo mínimo:
+O output é código Mermaid puro, pronto para colar em qualquer renderizador.
+
+## Fluxo
 
 ```
-/criar-mermaid Usuário faz login. Sistema valida credenciais. Se ok, vai pro dashboard. Se não, mostra erro e link de recuperação.
+1. Leitura do contexto
+   │  atores, entrada, sequência do caminho feliz,
+   │  pontos de decisão, falhas, estados de UI
+   ▼
+2. Geração do código
+   │  nós classificados pela paleta de contraste
+   ▼
+3. Validação de contraste
+      [ ] theme base na primeira linha
+      [ ] todo classDef com fill + color + stroke
+      [ ] toda decisão com as duas saídas rotuladas
+      [ ] todo caminho da análise de riscos no diagrama
 ```
 
-A skill gera o código Mermaid. Cole em qualquer renderizador Mermaid (GitHub, GitLab, Notion, Mermaid Live Editor, Obsidian).
+A etapa 3 é o que separa esta skill de pedir "faz um mermaid disso" para um agente qualquer: o diagrama só é entregue depois de a checklist fechar.
 
-## O que a skill garante
+## Cenário 1 — ideia bruta
 
-- **Contraste legível** — todo `classDef` declara `fill` + `color` + `stroke`. O diagrama funciona em tema claro e escuro.
-- **Cobertura exaustiva** — cada risco vira um nó de erro. Cada decisão tem os dois ramos rotulados.
-- **Estados de UI** — loading, empty state e error feedback aparecem como nós com classe própria.
-- **Sintaxe semântica** — retângulos para ações, losangos para decisões, cantos arredondados para início/fim.
-
-## Cenários de uso
-
-### 1. Ideia bruta (sem análise de riscos)
-
-Você tem uma descrição informal. A skill infere os pontos de falha.
+Você tem uma descrição informal e nenhuma análise de riscos. A skill infere os pontos de falha.
 
 ```
-/criar-mermaid O cliente escolhe um produto, informa o CEP, sistema calcula frete via API dos Correios,
-exibe prazo e valor. Cliente confirma e vai pro pagamento.
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-mermaid                                             │
+│                                                              │
+│   O cliente escolhe um produto, informa o CEP, o sistema     │
+│   calcula frete via API dos Correios, exibe prazo e valor.   │
+│   Cliente confirma e vai pro pagamento.                      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-Saída: fluxograma com nós de erro para API offline, CEP inválido, produto indisponível na região.
+Você descreveu cinco passos, todos de sucesso. O diagrama volta com API offline, CEP inválido e produto indisponível na região — falhas que a descrição não menciona e que alguém teria que tratar de qualquer forma.
 
 ```mermaid
 %%{init: {'theme': 'base'}}%%
@@ -68,20 +76,27 @@ class D,I,J decision
 class A,B,C,E,G,H,L action
 ```
 
-### 2. Com análise de riscos pronta
+É aqui que o fluxograma paga o investimento: ele revela o que ninguém escreveu. Cada nó vermelho é uma decisão que alguém vai tomar — no refinamento agora, ou no meio da implementação depois.
 
-Você já tem riscos mapeados. A skill é exaustiva — cada risco declarado aparece no diagrama.
+## Cenário 2 — com análise de riscos pronta
+
+Quando os riscos já estão mapeados, a skill é exaustiva: cada risco declarado precisa aparecer no diagrama.
 
 ```
-/criar-mermaid Fluxo: agendamento de consulta.
-Riscos:
-- API de disponibilidade retorna 500
-- Horário escolhido é ocupado durante o submit (concorrência)
-- Paciente sem cadastro ativo no convênio
-- Timeout no gateway de pagamento (15s)
-- Envio de email de confirmação falha
-Caminho feliz: paciente escolhe data → sistema consulta vagas → paciente confirma →
-sistema reserva → envia confirmação por email.
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-mermaid                                             │
+│                                                              │
+│   Fluxo: agendamento de consulta.                            │
+│   Riscos:                                                    │
+│   - API de disponibilidade retorna 500                       │
+│   - horário ocupado durante o submit (concorrência)          │
+│   - paciente sem cadastro ativo no convênio                  │
+│   - timeout no gateway de pagamento (15s)                    │
+│   - envio de e-mail de confirmação falha                     │
+│   Caminho feliz: escolhe data → consulta vagas → confirma    │
+│   → reserva → envia confirmação por e-mail                   │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ```mermaid
@@ -106,10 +121,10 @@ graph TD
     O -->|Não| Q[Erro: Timeout no pagamento]
     Q --> R[Reserva temporária expira]
     R --> A
-    P --> S[Envia email de confirmação]
-    S --> T{Email enviado?}
+    P --> S[Envia e-mail de confirmação]
+    S --> T{E-mail enviado?}
     T -->|Sim| U[Consulta agendada]
-    T -->|Não| V[Erro: Email não enviado]
+    T -->|Não| V[Erro: E-mail não enviado]
     V --> U
 
 classDef error fill:#fee,color:#900,stroke:#c00
@@ -126,14 +141,16 @@ class A,B,F,G,I,K,M,N,P,R,S action
 class H empty
 ```
 
-### 3. Fluxo com estados de tela (UX)
+Duas coisas para notar. A falha do e-mail (`V`) desemboca em sucesso (`U`), porque a consulta está agendada mesmo sem o e-mail sair — o diagrama distingue falha que bloqueia de falha que só degrada. E o timeout do pagamento devolve o paciente ao início, expirando a reserva temporária: um ciclo que só fica óbvio quando desenhado.
 
-Quando o foco é a experiência do usuário entre telas.
+## Cenário 3 — estados de tela
+
+Quando o foco é a experiência entre telas, entram as classes `loading` e `empty`, que os dois cenários anteriores quase não usam.
 
 ```
 /criar-mermaid App de pedidos: usuário acessa "Meus Pedidos".
-Estados possíveis: carregando lista, lista vazia (primeiro acesso), erro de rede,
-lista com pedidos, pedido sem status de entrega.
+Estados possíveis: carregando lista, lista vazia (primeiro acesso),
+erro de rede, lista com pedidos, pedido sem status de entrega.
 ```
 
 ```mermaid
@@ -153,7 +170,6 @@ graph TD
     J -->|Não| L[Exibe pedido sem status — Aguardando transportadora]
 
 classDef error fill:#fee,color:#900,stroke:#c00
-classDef success fill:#efe,color:#060,stroke:#393
 classDef decision fill:#fff3cd,color:#630,stroke:#c90
 classDef action fill:#e8e8e8,color:#222,stroke:#666
 classDef loading fill:#eef,color:#036,stroke:#69c
@@ -166,99 +182,55 @@ class C,D,J decision
 class A,F,G,I,K,L action
 ```
 
-### 4. Pós-PRD (validação visual)
-
-Com user stories e edge cases já documentados.
-
-```
-/criar-mermaid PRD: Carrinho de compras.
-US-03: Finalizar compra.
-Edge cases:
-- Item fica fora de estoque entre adicionar e finalizar
-- Cupom de desconto expira durante o checkout
-- Sessão do usuário expira após 30 min de inatividade
-- Bandeira do cartão não aceita pela adquirente
-```
+## Onde entra na cadeia
 
 ```mermaid
 %%{init: {'theme': 'base'}}%%
 graph TD
-    A[Carrinho com itens] --> B[Usuário clica em Finalizar compra]
-    B --> C{Sessão ainda ativa?}
-    C -->|Sim| D[Valida itens do carrinho]
-    C -->|Não| E[Erro: Sessão expirada]
-    E --> F[Redireciona para login]
-    D --> G{Itens em estoque?}
-    G -->|Sim| H[Usuário informa cupom]
-    G -->|Não| I[Erro: Item fora de estoque]
-    I --> J[Remove item e recalcula]
-    J --> D
-    H --> K{Cupom ainda válido?}
-    K -->|Sim| L[Aplica desconto]
-    K -->|Não| M[Erro: Cupom expirado]
-    M --> N[Remove cupom, segue sem desconto]
-    N --> L
-    L --> O[Usuário informa cartão]
-    O --> P{Bandeira aceita?}
-    P -->|Sim| Q[Envia para adquirente]
-    P -->|Não| R[Erro: Bandeira não aceita]
-    R --> S[Sugere outra forma de pagamento]
-    S --> O
-    Q --> T{Pagamento aprovado?}
-    T -->|Sim| U[Pedido confirmado]
-    T -->|Não| V[Erro: Pagamento recusado]
-    V --> S
+  A(Demanda vaga) --> B[refinamento-demanda]
+  B --> C{Fluxo com bifurcações?}
+  C -->|Sim| D[criar-mermaid]
+  C -->|Não| E[criar-prd]
+  D --> F[/Fluxograma validado com o solicitante/]
+  F --> E
+  E --> G[/PRD com o diagrama na seção que ele ilustra/]
+  G --> H[[Framework spec-driven]]
 
-classDef error fill:#fee,color:#900,stroke:#c00
-classDef success fill:#efe,color:#060,stroke:#393
-classDef decision fill:#fff3cd,color:#630,stroke:#c90
-classDef action fill:#e8e8e8,color:#222,stroke:#666
-classDef startend fill:#d4edda,color:#155724,stroke:#28a745
+  classDef success fill:#efe,color:#060,stroke:#393
+  classDef decision fill:#fff3cd,color:#630,stroke:#c90
+  classDef action fill:#e8e8e8,color:#222,stroke:#666
+  classDef startend fill:#d4edda,color:#155724,stroke:#28a745
 
-class E,I,M,R,V error
-class U success
-class C,G,K,P,T decision
-class A,B,D,F,H,J,L,N,O,Q,S action
+  class F,G success
+  class C decision
+  class B,D,E,H action
+  class A startend
 ```
 
-### 5. Composição com outras skills
+A skill é chamada de dois lugares além da linha de comando: o [`refinamento-demanda`](../refinamento-demanda/SKILL.md) oferece o diagrama quando a demanda tem passos sequenciais com bifurcações, e o [`criar-prd`](../criar-prd/SKILL.md) oferece quando a feature descreve fluxo visualizável. Nos dois casos o resultado é posicionado junto ao tópico que ilustra, não anexado no fim.
 
-O fluxograma como etapa de validação visual entre refino e PRD:
+O ganho de gerar antes do PRD é de validação: fluxograma é o formato em que um solicitante não técnico consegue apontar "não é assim que funciona". Parágrafo de requisito, não.
 
-```
-1. /refinamento-demanda   → refina a demanda, identifica riscos
-2. /criar-mermaid          → fluxograma com os riscos mapeados (validação visual)
-3. /criar-prd              → PRD com o fluxograma como referência
-```
-
-## Paleta de cores
+## Paleta
 
 | Nó | Classe | Aparência |
 |---|---|---|
-| Erro / falha | `error` | Fundo rosa claro, texto vermelho escuro |
-| Sucesso / conclusão | `success` | Fundo verde claro, texto verde escuro |
-| Decisão (losango) | `decision` | Fundo amarelo claro, texto marrom |
-| Ação / processo | `action` | Fundo cinza claro, texto quase preto |
-| Loading / espera | `loading` | Fundo azul claro, texto azul escuro |
-| Empty state / vazio | `empty` | Fundo lilás claro, texto verde oliva |
-| Início / fim | `startend` | Fundo verde suave, texto verde escuro |
+| Erro / falha | `error` | fundo rosa claro, texto vermelho escuro |
+| Sucesso / conclusão | `success` | fundo verde claro, texto verde escuro |
+| Decisão (losango) | `decision` | fundo amarelo claro, texto marrom |
+| Ação / processo | `action` | fundo cinza claro, texto quase preto |
+| Loading / espera | `loading` | fundo azul claro, texto azul escuro |
+| Empty state | `empty` | fundo lilás claro, texto verde oliva |
+| Início / fim | `startend` | fundo verde suave, texto verde escuro |
 
-## Como renderizar o diagrama
+## Por que o contraste é regra e não estilo
 
-O output da skill é código Mermaid puro. Você pode colar em:
+O erro comum é declarar `classDef error fill:#f96` sem `color`. O Mermaid delega a cor do texto ao tema do renderizador, e num tema escuro o padrão é cinza claro sobre preenchimento médio: ilegível.
 
-- **GitHub/GitLab** — blocos de código com ` ```mermaid `
-- **Mermaid Live Editor** — https://mermaid.live
-- **Obsidian** — suporte nativo a blocos mermaid
-- **Notion** — via integração Mermaid
-- **VS Code** — extensão "Markdown Preview Mermaid Support"
-- **Qualquer arquivo `.md`** — renderizadores de markdown com suporte a Mermaid
+A skill fixa duas regras contra isso. `%%{init: {'theme': 'base'}}%%` na primeira linha, porque o tema `base` respeita cores explícitas em vez de injetar fundo escuro. E `fill`, `color` e `stroke` sempre declarados juntos, o que garante fundo claro com texto escuro em qualquer plataforma.
 
-## Por que o contraste funciona
+## Onde renderizar
 
-O problema comum é declarar `classDef error fill:#f96` sem `color`. O Mermaid delega a cor do texto ao tema do renderizador. Se o tema for escuro (`neutral`, `dark`), o texto padrão é cinza claro (`#ccc`) sobre um preenchimento médio — ilegível.
+GitHub e GitLab renderizam blocos ` ```mermaid ` direto no markdown. Fora disso: [Mermaid Live Editor](https://mermaid.live), Obsidian com suporte nativo, Notion via integração, e VS Code com a extensão "Markdown Preview Mermaid Support".
 
-Esta skill resolve com duas regras fixas:
-
-1. **`%%{init: {'theme': 'base'}}%%`** força o tema neutro, que respeita cores explícitas
-2. **`fill` + `color` + `stroke` sempre juntos** — fundo claro + texto escuro = contraste garantido em qualquer plataforma
+Veja as regras completas em [`SKILL.md`](SKILL.md).

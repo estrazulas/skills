@@ -31,7 +31,7 @@ A skill conduz 12 etapas, uma pergunta por vez. A primeira escolhe a profundidad
    │  6. Recebimento da demanda                                │
    │  7. Espelho de entendimento                               │
    │  8. Consulta às fontes    → ✅ ❌ ⚠️ ❓ por premissa         │
-   │  9. Perguntas de refinamento  ← o coração da skill         │
+   │  9. Perguntas de refinamento  ← 15 dimensões + detectores │
    │ 10. Diagrama de fluxo (opcional)                          │
    └───────────────────────────┬───────────────────┬───────────┘
                                │                   │
@@ -135,7 +135,7 @@ Demanda longa, e o solicitante repassou o pedido de outra pessoa. É onde a saba
 
 Duas coisas dispararam ao mesmo tempo nessa resposta: **comparação sem definição** e **referência a "existente" não verificável**, os dois detectores de [`references/detectores.md`](references/detectores.md).
 
-No modo padrão a comparação entraria no arquivo marcada ❓ e a conversa seguiria — o que é honesto, mas empurra a descoberta para o desenvolvimento. A sondagem custou uma mensagem e transformou uma referência que ninguém podia checar em decisão explícita.
+No modo padrão a comparação entraria no arquivo marcada ❓ e a conversa seguiria. Honesto, mas empurra a descoberta para o desenvolvimento. A sondagem custou uma mensagem e transformou uma referência que ninguém podia checar em decisão explícita.
 
 A resposta dispara mais duas coisas na mesma etapa:
 
@@ -222,9 +222,9 @@ tasks/<slug>/
 
 Se a demanda contiver mais de uma feature independente, a `criar-prd` propõe a divisão e trabalha **um PRD por vez** até aprovação.
 
-## Encaminhando os PRDs para spec-driven
+## Encaminhando os PRDs
 
-Se você usa specs do Kiro (requirements → design → tasks) ou OpenSpec (explore → propose → apply → archive), a cadeia completa fica assim:
+Do PRD saem dois caminhos para a execução: virar issues, ou entrar num framework spec-driven como as specs do Kiro (requirements → design → tasks) ou o OpenSpec (explore → propose → apply → archive). A cadeia completa fica assim:
 
 ```mermaid
 %%{init: {'theme': 'base'}}%%
@@ -235,8 +235,11 @@ graph TD
   D -->|Não| E[Pendência vira premissa inventada<br/>lá na frente]
   D -->|Sim| F[criar-prd]
   F --> G[/PRD + user stories + ADRs/]
-  G --> H[[Framework spec-driven]]
-  H --> I(requirements → design → tasks)
+  G --> H{Como levar para execução?}
+  H -->|Issues| I[Skill de issues da instituição<br/>ou criação manual]
+  H -->|Spec-driven| J[[Kiro specs ou OpenSpec]]
+  I --> K(Backlog rastreável até a demanda)
+  J --> L(requirements → design → tasks)
 
   classDef error fill:#fee,color:#900,stroke:#c00
   classDef success fill:#efe,color:#060,stroke:#393
@@ -246,22 +249,20 @@ graph TD
 
   class E error
   class G success
-  class D decision
-  class B,C,F,H action
-  class A,I startend
+  class D,H decision
+  class B,C,F,I,J action
+  class A,K,L startend
 ```
 
-A vantagem de chegar no framework com esse material pronto é onde a ambiguidade é paga.
+Os dois caminhos partem do mesmo material. Com **issues**, a skill institucional de criação de issues consome o PRD e o catálogo de user stories — ela ainda não está publicada aqui, e até chegar o caminho é criar as issues à mão a partir dos mesmos arquivos. O PRD já traz a estrutura de issues proposta com ordem, dependência e complexidade, e cada user story vira uma issue com acceptance criteria e edge cases prontos no corpo.
+
+Com **spec-driven**, o PRD alimenta a fase de requisitos direto. O ganho de chegar lá com esse material pronto está em onde a ambiguidade se paga.
 
 Framework spec-driven deriva requisitos do que você entrega. Ambiguidade que sobrevive até ali não desaparece: ela é **resolvida por inferência do agente**, em silêncio, e vira decisão de design. Depois as tarefas são geradas sobre essa decisão inventada. Quando o erro aparece, ele já está espalhado por três camadas.
 
-Entrar com refinamento e PRD feitos muda três coisas:
+Entrar com refinamento e PRD feitos muda onde o custo cai. Fechar "quem homologa" numa conversa custa uma mensagem; descobrir isso na fase de tasks custa retrabalho de design e de código.
 
-**A ambiguidade morre onde é barata.** Fechar "quem homologa" numa conversa custa uma mensagem. Descobrir na fase de tasks custa retrabalho de design e de código.
-
-**O que ficou em aberto está explícito e assinado.** O arquivo técnico lista as pendências, e o PO fecha cada uma. O framework recebe decisões tomadas em vez de lacunas que ele vai preencher por conta própria.
-
-**As user stories já falam a língua do requirements.** User story com acceptance criteria e edge cases é praticamente o formato que a fase de requisitos espera. Menos tradução, menos deriva entre o que o solicitante pediu e o que a spec descreve.
+Muda também quem decide. O arquivo técnico lista as pendências e o PO fecha cada uma, então o framework recebe decisão tomada em vez de lacuna para preencher sozinho. E user story com acceptance criteria já é quase o formato que a fase de requisitos espera, o que encurta a tradução entre o que o solicitante pediu e o que a spec descreve.
 
 Sem essa cadeia, o caminho usual é entregar a demanda crua ao framework e usar a fase de requisitos como refinamento improvisado — sem detectores de vaguidade, sem verificação de premissas contra o código, e sem o registro de quem decidiu o quê.
 
