@@ -1,1 +1,0 @@
-../../refinamento-demanda/references/detectores.md

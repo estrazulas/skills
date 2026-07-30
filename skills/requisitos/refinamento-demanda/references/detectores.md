@@ -1,11 +1,11 @@
 # Detectores de Vaguidade
 
-Ative alerta automatico quando o texto contiver:
+Ative alerta automático quando o texto contiver:
 
-- **Comparacao sem definicao**: "similar a X", "analogo a", "mesma funcionalidade de Y", "no mesmo padrao de", "como ja funciona em"
-- **Modais fracos**: "quando for o caso", "se necessario", "eventualmente", "podera", "devera considerar"
-- **Sujeito omitido**: "sistema deve permitir" (a quem?), "podera ser feito" (por quem?)
+- **Comparação sem definição**: "similar a X", "análogo a", "mesma funcionalidade de Y", "no mesmo padrão de", "como já funciona em"
+- **Modais fracos**: "quando for o caso", "se necessário", "eventualmente", "poderá", "deverá considerar"
+- **Sujeito omitido**: "sistema deve permitir" (a quem?), "poderá ser feito" (por quem?)
 - **Verbos de fluxo sem estados**: "convocar", "encaminhar", "aprovar", "homologar" — sem dizer o antes, o durante e o depois
-- **Substantivos de dominio sem definicao**: qualquer termo especifico que aparece pela primeira vez e nao tem definicao no texto (nomes de perfis, etapas, artefatos)
-- **Referencias a "existente" nao verificaveis**: "como ja tem no sistema", "reaproveitar a tela X" — validar contra fontes ou marcar ❓
-- **Numeros sem unidade ou formula**: "pontuacao", "peso", "nota" — sem dizer intervalo, arredondamento, ponderacao
+- **Substantivos de domínio sem definição**: qualquer termo específico que aparece pela primeira vez e não tem definição no texto (nomes de perfis, etapas, artefatos)
+- **Referências a "existente" não verificáveis**: "como já tem no sistema", "reaproveitar a tela X" — validar contra fontes ou marcar ❓
+- **Números sem unidade ou fórmula**: "pontuação", "peso", "nota" — sem dizer intervalo, arredondamento, ponderação
