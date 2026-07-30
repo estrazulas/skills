@@ -188,4 +188,81 @@ Dois arquivos, sempre:
 | `<slug>_tecnico.md` | equipe | premissas verificadas, decisões, estrutura de issues, estimativa. Em sabatina, mais glossário e mapa de dependências |
 | `<slug>_solicitante.md` | quem pediu | linguagem acessível, wireframes, sem jargão |
 
+## Depois do refinamento
+
+O refinamento entrega questionamento, não solução. O passo seguinte só faz sentido quando as **perguntas em aberto** do arquivo técnico foram fechadas pelo product owner — enquanto houver pendência, qualquer documento construído sobre ela carrega a lacuna adiante.
+
+Com as pendências sanadas, o insumo está pronto para a [`criar-prd`](../criar-prd/SKILL.md):
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ você                                                         │
+│   /criar-prd                                                 │
+│                                                              │
+│   Segue o questionário do refinamento-demanda, já revisado   │
+│   pelo PO e sem pendências:                                  │
+│   #questionamentos/monitoria-observacao/monitoria_tecnico.md │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Mencionar a origem importa: a `criar-prd` trata input vindo do refinamento de forma diferente, porque premissas já verificadas não voltam para a fila de perguntas.
+
+O que sai desse passo:
+
+```
+tasks/<slug>/
+├── _prd.md              → problema, escopo, fora do escopo,
+│                          critérios de aceite, 3-6 milestones
+├── _user_stories.md     → cada US com acceptance criteria,
+│                          regras e edge cases
+└── adrs/
+    ├── adr-001.md       → uma decisão arquitetural por arquivo
+    └── ...
+```
+
+Se a demanda contiver mais de uma feature independente, a `criar-prd` propõe a divisão e trabalha **um PRD por vez** até aprovação.
+
+## Encaminhando os PRDs para spec-driven
+
+Se você usa specs do Kiro (requirements → design → tasks) ou OpenSpec (explore → propose → apply → archive), a cadeia completa fica assim:
+
+```mermaid
+%%{init: {'theme': 'base'}}%%
+graph TD
+  A(Demanda vaga) --> B[refinamento-demanda]
+  B --> C[/Questionário técnico + solicitante/]
+  C --> D{Pendências fechadas<br/>pelo PO?}
+  D -->|Não| E[Pendência vira premissa inventada<br/>lá na frente]
+  D -->|Sim| F[criar-prd]
+  F --> G[/PRD + user stories + ADRs/]
+  G --> H[[Framework spec-driven]]
+  H --> I(requirements → design → tasks)
+
+  classDef error fill:#fee,color:#900,stroke:#c00
+  classDef success fill:#efe,color:#060,stroke:#393
+  classDef decision fill:#fff3cd,color:#630,stroke:#c90
+  classDef action fill:#e8e8e8,color:#222,stroke:#666
+  classDef startend fill:#d4edda,color:#155724,stroke:#28a745
+
+  class E error
+  class G success
+  class D decision
+  class B,C,F,H action
+  class A,I startend
+```
+
+A vantagem de chegar no framework com esse material pronto é onde a ambiguidade é paga.
+
+Framework spec-driven deriva requisitos do que você entrega. Ambiguidade que sobrevive até ali não desaparece: ela é **resolvida por inferência do agente**, em silêncio, e vira decisão de design. Depois as tarefas são geradas sobre essa decisão inventada. Quando o erro aparece, ele já está espalhado por três camadas.
+
+Entrar com refinamento e PRD feitos muda três coisas:
+
+**A ambiguidade morre onde é barata.** Fechar "quem homologa" numa conversa custa uma mensagem. Descobrir na fase de tasks custa retrabalho de design e de código.
+
+**O que ficou em aberto está explícito e assinado.** O arquivo técnico lista as pendências, e o PO fecha cada uma. O framework recebe decisões tomadas em vez de lacunas que ele vai preencher por conta própria.
+
+**As user stories já falam a língua do requirements.** User story com acceptance criteria e edge cases é praticamente o formato que a fase de requisitos espera. Menos tradução, menos deriva entre o que o solicitante pediu e o que a spec descreve.
+
+Sem essa cadeia, o caminho usual é entregar a demanda crua ao framework e usar a fase de requisitos como refinamento improvisado — sem detectores de vaguidade, sem verificação de premissas contra o código, e sem o registro de quem decidiu o quê.
+
 Veja o fluxo completo em [`SKILL.md`](SKILL.md).
